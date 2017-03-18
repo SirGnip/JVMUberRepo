@@ -1,6 +1,7 @@
 package com.juxtaflux;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -17,7 +18,8 @@ public class PaneBuilderExample extends AppFramework {
             PaneBuilder<HBox> hbox1 = new PaneBuilder<>(new HBox(), () -> {
                 Button a = new Button("3");
                 Button b = new Button("4");
-                return Arrays.asList(a, b);
+                Label x = new Label("my label");
+                return Arrays.asList(a, b, x);
             });
             PaneBuilder<HBox> hbox2 = new PaneBuilder<>(new HBox(), () -> {
                 Button a = new Button("8");

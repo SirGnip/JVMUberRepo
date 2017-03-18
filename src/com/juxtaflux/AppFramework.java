@@ -51,8 +51,8 @@ public abstract class AppFramework extends Application {
     }
     private static String getNodeSpecificTag(Node n) {
         String s = " ";
-        if (n instanceof Button) {
-            s += "'" + ((Button) n).getText() + "'";
+        if (n instanceof Labeled) {
+            s += "'" + ((Labeled) n).getText() + "'";
         }
         if (n instanceof Pane) {
             s += "childCnt=" + ((Pane) n).getChildrenUnmodifiable().size();
