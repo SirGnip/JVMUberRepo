@@ -12,7 +12,7 @@ class Config {
     static final int APP_WIDTH = 700;
     static final int APP_HEIGHT = 750;
     static final String APP_TITLE = "ClipDashboard";
-    static final List<String> INITIAL_CLIPS = Arrays.asList("abc", "def", "ghijklmnop", "q", "rstuv", "wxyz");
+    static final List<String> INITIAL_CLIPS = Arrays.asList();
     static final Paint STATUS_BAR_ERROR_COLOR = Color.RED;
     static final int BUFFER_CROP_LENGTH = 70;
     static final double DRAG_N_DROP_ENTER_OPACITY = 0.2;
