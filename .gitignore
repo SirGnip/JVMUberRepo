@@ -1,5 +1,9 @@
 out/
 
+3p/
+app/FluxFlightFightBAK/
+lib/JavaFXUtils/0.2/
+
 # IntelliJ
 .idea/
 *.iml
