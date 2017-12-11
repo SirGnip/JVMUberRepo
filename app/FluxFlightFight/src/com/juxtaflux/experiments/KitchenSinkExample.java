@@ -1,0 +1,278 @@
+package com.juxtaflux.experiments;
+
+import com.juxtaflux.app.Bird;
+import com.juxtaflux.app.GenericLifetimeActor;
+import com.juxtaflux.app.LifetimeRect;
+import com.juxtaflux.app.SimpleExplosion;
+import com.juxtaflux.fluxlib.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
+import javafx.scene.media.AudioClip;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
+import javafx.util.Pair;
+// JInput JOYSTICK
+//import net.java.games.input.Controller;
+//import net.java.games.input.ControllerEnvironment;
+//import net.java.games.input.Event;
+//import net.java.games.input.EventQueue;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+
+import java.io.*;
+import java.net.URL;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.juxtaflux.fluxlib.Flx.*;
+import static java.lang.Thread.sleep;
+
+public class KitchenSinkExample extends ExampleBase implements Stepable {
+    private List<Bird> birds = new ArrayList<>();
+    private ActorList actorList = new ActorList();
+    private FrameStepper stepper;
+    private BoundingBox edges = new BoundingBox(50, 50, width-50, height-50);
+    private Range widthRange = new Range(0, width);
+    private Range heightRange = new Range(0, height);
+    private AudioClip laserClip;
+    private List<AudioClip> flapClips = new ArrayList<>();
+    private EventHandler<ActionEvent> joyHandler;
+    private Pane graphRoot;
+    private Random rnd = new Random();
+
+    private AudioClip loadAudio(String resourceName) {
+        System.out.println("Loading audio from resource: " + resourceName);
+        URL url = getClass().getResource(resourceName);
+        checkNotNull(url);
+        System.out.println("Loading audio from URL: " + url.toString());
+        return new AudioClip(url.toString());
+    }
+
+    @Override
+    protected void buildRoot(Stage stage, Pane pane) {
+        graphRoot = pane;
+        graphRoot.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+//        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+//        String appConfigPath = rootPath + "/resources/flux.properties";
+//        System.out.println("prpoerties path: " + appConfigPath);
+
+//        URL propUrl = getClass().getResource("/resources/flux.properties");
+
+        // read from .properties file
+        InputStream in = getClass().getResourceAsStream("/resources/flux.properties");
+        Properties props = new Properties();
+        try {
+            props.load(in);
+            in.close();
+            System.out.println(props);
+            String stuff = props.getProperty("stuff");
+            System.out.println("STUFF read from flie: " + stuff);
+        } catch (Exception ex) {
+            System.out.println("ERROR " + ex);
+        }
+
+        // read text file from .jar
+        InputStream in2 = getClass().getResourceAsStream("/resources/blah.txt");
+        System.out.println("input stream: " + in2);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in2));
+        System.out.println("reader: " + reader);
+//        String txt = reader.lines().collect(Collectors.joining("\n"));
+//        System.out.println(txt);
+        List<String> txt = reader.lines().collect(Collectors.toList());
+        txt.forEach(s -> System.out.println(s));
+
+        // set up image
+        URL imgUrl = getClass().getResource("/resources/img/cloud.png");
+        System.out.println("Loading image from URL: " + imgUrl);
+        checkNotNull(imgUrl);
+        ImageView img = new ImageView(imgUrl.toString());
+        img.setPreserveRatio(true);
+        img.setTranslateX(300);
+        img.setTranslateY(250);
+        img.setOpacity(0.15);
+        graphRoot.getChildren().add(img);
+
+        // set up sound
+        laserClip = loadAudio("/resources/audio/laser.wav");
+        flapClips.add(loadAudio("/resources/audio/flap1.wav"));
+        flapClips.add(loadAudio("/resources/audio/flap2.wav"));
+        flapClips.add(loadAudio("/resources/audio/flap3.wav"));
+
+        // button
+        Button btn = new Button("Click ME");
+        btn.setTranslateX(100);
+        btn.setTranslateY(100);
+
+        Supplier<Node> s1 = () -> {
+            Vector2D pt = Flx.rnd(rnd, edges);
+            Rectangle r = new Rectangle(pt.getX(), pt.getY(), 30, 30);
+            r.setFill(Color.GREEN);
+            return r;
+        };
+        Supplier<Node> s2 = () -> Flx.makeCross((int)widthRange.rand(rnd), (int)heightRange.rand(rnd), 40, Color.GREENYELLOW);
+        Supplier<Node> s3 = () -> Flx.makeGrid((int)widthRange.rand(rnd), (int)heightRange.rand(rnd), 50, 50, 20, Color.LIGHTBLUE);
+        List<Supplier<Node>> suppliers = Arrays.asList(s1, s2, s3);
+
+        btn.setOnAction(e -> {
+            System.out.println("click");
+            laserClip.play();
+            actorList.actors.add(new GenericLifetimeActor(10, graphRoot, Flx.rndChoice(suppliers, rnd)));
+        });
+        graphRoot.getChildren().add(btn);
+
+        // birds
+        double startX = 100;
+        birds.add(new Bird(startX, 200,"Blue", alphaize(Color.BLUE), graphRoot));
+        startX += 100;
+        birds.add(new Bird(startX, 200,"Red", alphaize(Color.RED), graphRoot));
+        startX += 100;
+        birds.add(new Bird(startX, 200,"Green", alphaize(Color.GREEN), graphRoot));
+        startX += 100;
+        birds.add(new Bird(startX, 200,"Yellow", alphaize(Color.YELLOW), graphRoot));
+
+        // FrameStepper
+        stepper = new FrameStepper(this).register();
+
+        // input
+        double vertImpulse = 200.0;
+        double horizImpulse = 75.0;
+
+        Map<KeyCode, Pair<Bird, Vector2D>> keymap = new HashMap<>();
+        Vector2D impulseRight = new Vector2D(horizImpulse, 0);
+        Vector2D impulseLeft = new Vector2D(-horizImpulse, 0);
+        Vector2D impulseUp = new Vector2D(0, -vertImpulse);
+        keymap.put(KeyCode.E, new Pair<>(birds.get(0), impulseRight));
+        keymap.put(KeyCode.Q, new Pair<>(birds.get(0), impulseLeft));
+        keymap.put(KeyCode.W, new Pair<>(birds.get(0), impulseUp));
+        keymap.put(KeyCode.RIGHT, new Pair<>(birds.get(1), impulseRight));
+        keymap.put(KeyCode.LEFT, new Pair<>(birds.get(1), impulseLeft));
+        keymap.put(KeyCode.UP, new Pair<>(birds.get(1), impulseUp));
+        keymap.put(KeyCode.B, new Pair<>(birds.get(2), impulseRight));
+        keymap.put(KeyCode.C, new Pair<>(birds.get(2), impulseLeft));
+        keymap.put(KeyCode.V, new Pair<>(birds.get(2), impulseUp));
+        keymap.put(KeyCode.P, new Pair<>(birds.get(3), impulseRight));
+        keymap.put(KeyCode.I, new Pair<>(birds.get(3), impulseLeft));
+        keymap.put(KeyCode.O, new Pair<>(birds.get(3), impulseUp));
+
+        // Keyboard
+        stage.getScene().setOnKeyPressed(e -> {
+            if (e.getCode().equals(KeyCode.ESCAPE)) {
+                close();
+            } else if (e.getCode().equals(KeyCode.DIGIT1)) {
+                birds.forEach(bird ->
+                        actorList.actors.add(SimpleExplosion.make(bird.getX(), bird.getY(), 100, alphaize(bird.getColor()), graphRoot)));
+            } else if (!keymap.containsKey(e.getCode())) {
+            } else {
+                Pair<Bird, Vector2D> pair = keymap.get(e.getCode());
+                handleInput(pair.getKey(), pair.getValue());
+            }
+        });
+
+        // Mouse
+        stage.getScene().setOnMouseClicked(e -> {
+            System.out.println(e.isPrimaryButtonDown() + "/" + e.isSecondaryButtonDown() + " " + e);
+            Bird b = birds.get(3);
+            if (e.getButton().equals(MouseButton.PRIMARY) ) {
+                handleInput(b, impulseLeft);
+            } else if (e.getButton().equals(MouseButton.SECONDARY)) {
+                handleInput(b, impulseRight);
+            } else if (e.getButton().equals(MouseButton.MIDDLE)) {
+                handleInput(b, impulseUp);
+            }
+        });
+
+//        // JInput JOYSTICK
+//        joyHandler = (e -> {
+//            System.out.println("joy handler " + e.getEventType());
+//            System.out.println(e);
+//            bird1.addVel(new Vector2D(0, -vertImpulse));
+//        });
+
+        stage.setFullScreen(false);
+    }
+
+    private void handleInput(Bird bird, Vector2D impulse) {
+        bird.addVel(impulse);
+        double bal = ((bird.getX() / width) * 2.0) - 1.0;
+        rndChoice(flapClips, rnd).play(1.0, bal, 1, 0.0, 1);
+        actorList.actors.add(new LifetimeRect(Color.gray(0.2), 3, bird.getX(), bird.getY(), 3, graphRoot));
+    }
+
+    @Override
+    public void step(double delta) {
+        checkNotNull(actorList);
+        birds.forEach(bird -> {
+            checkNotNull(bird);
+            bird.step(delta);
+        });
+        actorList.step(delta);
+        if (stepper.getIntervalFrameCount() >= 200) {
+            System.out.println(stepper.getFpsSummary());
+        }
+        birds.forEach(bird -> {
+            if (!edges.contains(bird.getBounds())) {
+                bird.stopAtEdge(edges);
+            }
+        });
+
+        for (int a = 0; a < 3; ++a) {
+            for (int b = a + 1; b < 4; ++b) {
+                Bird bird1 = birds.get(a);
+                Bounds bounds1 = bird1.getBounds();
+                Bird bird2 = birds.get(b);
+                Bounds bounds2 = bird2.getBounds();
+                if (bounds1.intersects(bounds2)) {
+                    laserClip.play(0.3, 0.5, 1, 0.0, 1);
+                    Vector2D intersectPt = boundsMid(bounds1, bounds2);
+                    actorList.actors.add(SimpleExplosion.make(intersectPt, 50, alphaize(Color.WHITE, 0.5), graphRoot));
+                    if (bounds1.getMinY() < bounds2.getMinY()) {
+                        System.out.println("higher joust by " + bird1.getName());
+                        bird2.doDie();
+                    } else if (bounds2.getMinY() < bounds1.getMinY()) {
+                        System.out.println("higher joust by " + bird2.getName());
+                        bird1.doDie();
+                    }
+                }
+            }
+        }
+
+
+
+//        // JInput JOYSTICK
+//        joyStep();
+    }
+
+//    // JInput JOYSTICK
+//    private void joyStep() {
+//        Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
+//        int controllerIdx = 0;
+//        for (Controller cont : controllers) {
+//            cont.poll();
+//            EventQueue queue = cont.getEventQueue();
+//            Event event = new Event();
+//            while (queue.getNextEvent(event)) {
+//                if (controllerIdx == 4 && event.getComponent().getIdentifier().getName().equals("3") && event.getValue() > 0.0) {
+//                    System.out.println("firing joy handler");
+//                    joyHandler.handle(new ActionEvent());
+//                }
+//            }
+//            controllerIdx++;
+//        }
+//    }
+}
+
+
