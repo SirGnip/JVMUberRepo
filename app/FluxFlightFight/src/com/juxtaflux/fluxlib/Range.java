@@ -112,6 +112,10 @@ public class Range {
         return Flx.clampHi(v, hi);
     }
 
+    public double lerp(double u) { return Flx.lerp(lo, hi, u); }
+
+    public double normalize(double v) { return Flx.normalize(v, lo, hi); }
+
     /** return a range that encompasses the existing range and the given value */
     public Range include(double v) {
         if (v > getHi()) {

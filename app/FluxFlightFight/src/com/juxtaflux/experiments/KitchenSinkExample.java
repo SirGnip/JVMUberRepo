@@ -207,9 +207,17 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
 
     private void handleInput(Bird bird, Vector2D impulse) {
         bird.addVel(impulse);
-        double bal = ((bird.getX() / width) * 2.0) - 1.0;
+        double bal = calcBalance(bird.getX());
         rndChoice(flapClips, rnd).play(1.0, bal, 1, 0.0, 1);
         actorList.actors.add(new LifetimeRect(Color.gray(0.2), 3, bird.getX(), bird.getY(), 3, graphRoot));
+    }
+
+    /**  Given an x value, return a value that can be used for audio balance (-1->1) */
+    private double calcBalance(double x) {
+        double norm = Flx.normalize(x, edges.getMinX(), edges.getMaxX());
+        double balance = (norm * 2.0) - 1.0;
+        System.out.println(("BAL: "  + x + " " + balance));
+        return balance;
     }
 
     @Override
@@ -236,7 +244,7 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
                 Bird bird2 = birds.get(b);
                 Bounds bounds2 = bird2.getBounds();
                 if (bounds1.intersects(bounds2)) {
-                    laserClip.play(0.3, 0.5, 1, 0.0, 1);
+                    laserClip.play(0.3, calcBalance(bird1.getX()), 1, 0.0, 1);
                     Vector2D intersectPt = boundsMid(bounds1, bounds2);
                     actorList.actors.add(SimpleExplosion.make(intersectPt, 50, alphaize(Color.WHITE, 0.5), graphRoot));
                     if (bounds1.getMinY() < bounds2.getMinY()) {

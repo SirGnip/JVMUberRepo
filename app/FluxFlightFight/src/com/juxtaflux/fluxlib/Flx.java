@@ -98,6 +98,22 @@ public abstract class Flx {
         return v;
     }
 
+    /** linearly interpolate between two values (can be floats or vectors) */
+    public static double lerp(double v1, double v2, double u) {
+        return v1 + ((v2 - v1) * u);
+    }
+
+    /** Given a value and a range, return the normalized value of the value in the range.
+
+    This returns a value between 0-1 that describes how far the given value is
+    between the min and max.  If val is outside of the min/max range, the
+    returned value will be outside of the 0-1 range. */
+    public static double normalize(double v, double min, double max) {
+        double offset = v - min;
+        double span = max - min;
+        return offset / span;
+    }
+
     /** get vector describing how much a smaller Box has "escaped" a surrounding Box */
     // Problem: what if "smaller" is larger in a dimension than "surround"
     public static Vector2D escapingBy(Bounds smaller, Bounds surround, double slushAmount) {

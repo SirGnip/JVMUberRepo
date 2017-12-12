@@ -24,7 +24,7 @@ public class Bird implements Actor {
     private Color color;
     private DoubleProperty x;
     private DoubleProperty y;
-    Polygon poly;
+    private Polygon poly;
     private Vector2D vel = new Vector2D(0, 120);
     private Vector2D gravity = new Vector2D(0, 400);
     private double maxYVel = 600;
@@ -77,6 +77,14 @@ public class Bird implements Actor {
     }
 
     public void addVel(Vector2D vel) {
+        if (vel.getX() == 0.0) {
+        } else {
+            if (vel.getX() > 0) {
+                poly.setScaleX(1);
+            } else {
+                poly.setScaleX(-1);
+            }
+        }
         this.vel = this.vel.add(vel);
     }
 

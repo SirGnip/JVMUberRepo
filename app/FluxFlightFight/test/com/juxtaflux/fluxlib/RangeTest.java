@@ -130,6 +130,22 @@ public class RangeTest {
     }
 
     @Test
+    public void lerpReturnsValue() {
+        Range r = new Range(30.0, 40.0);
+        assertEquals(38, r.lerp(0.8), DELTA);
+    }
+
+    @Test
+    public void normalizeReturnsValue() {
+        Range r = new Range(30.0, 40.0);
+        assertEquals(-1.5, r.normalize(15.0), DELTA);
+        assertEquals(0.0, r.normalize(30.0), DELTA);
+        assertEquals(0.5, r.normalize(35.0), DELTA);
+        assertEquals(1.0, r.normalize(40.0), DELTA);
+        assertEquals(1.5, r.normalize(45.0), DELTA);
+    }
+
+    @Test
     public void generateRandomValueInRange() {
         Random rnd = new Random(424242);
         Range range = new Range(45.6, 45.60001);

@@ -51,4 +51,22 @@ public class FlxTest {
         assertEquals(-1.0, clampHi(-1.0, 5.0), DELTA);
         assertEquals(5.0, clampHi(10.0, 5.0), DELTA);
     }
+
+    @Test
+    public void testLerp() {
+        assertEquals(15.0, lerp(30.0, 40.0, -1.5), DELTA);
+        assertEquals(30.0, lerp(30.0, 40.0, 0.0), DELTA);
+        assertEquals(35.0, lerp(30.0, 40.0, 0.5), DELTA);
+        assertEquals(40.0, lerp(30.0, 40.0, 1.0), DELTA);
+        assertEquals(45.0, lerp(30.0, 40.0, 1.5), DELTA);
+    }
+
+    @Test
+    public void testNormalize() {
+        assertEquals(-1.5, normalize(15.0, 30.0, 40.0), DELTA);
+        assertEquals(0.0, normalize(30.0, 30.0, 40.0), DELTA);
+        assertEquals(0.5, normalize(35.0, 30.0, 40.0), DELTA);
+        assertEquals(1.0, normalize(40.0, 30.0, 40.0), DELTA);
+        assertEquals(1.5, normalize(45.0, 30.0, 40.0), DELTA);
+    }
 }
