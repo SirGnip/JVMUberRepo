@@ -14,7 +14,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -23,7 +22,6 @@ import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 // JInput JOYSTICK
 //import net.java.games.input.Controller;
 //import net.java.games.input.ControllerEnvironment;
@@ -61,6 +59,8 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         System.out.println("Loading audio from URL: " + url.toString());
         return new AudioClip(url.toString());
     }
+
+    public List<Bird> getBirds() { return birds; }
 
     @Override
     protected void buildRoot(Stage stage, Pane pane) {
@@ -147,26 +147,7 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         // FrameStepper
         stepper = new FrameStepper(this).register();
 
-        // input
-        double vertImpulse = 200.0;
-        double horizImpulse = 75.0;
-
-        Map<KeyCode, Pair<Bird, Vector2D>> keymap = new HashMap<>();
-        Vector2D impulseRight = new Vector2D(horizImpulse, 0);
-        Vector2D impulseLeft = new Vector2D(-horizImpulse, 0);
-        Vector2D impulseUp = new Vector2D(0, -vertImpulse);
-        keymap.put(KeyCode.E, new Pair<>(birds.get(0), impulseRight));
-        keymap.put(KeyCode.Q, new Pair<>(birds.get(0), impulseLeft));
-        keymap.put(KeyCode.W, new Pair<>(birds.get(0), impulseUp));
-        keymap.put(KeyCode.RIGHT, new Pair<>(birds.get(1), impulseRight));
-        keymap.put(KeyCode.LEFT, new Pair<>(birds.get(1), impulseLeft));
-        keymap.put(KeyCode.UP, new Pair<>(birds.get(1), impulseUp));
-        keymap.put(KeyCode.B, new Pair<>(birds.get(2), impulseRight));
-        keymap.put(KeyCode.C, new Pair<>(birds.get(2), impulseLeft));
-        keymap.put(KeyCode.V, new Pair<>(birds.get(2), impulseUp));
-        keymap.put(KeyCode.P, new Pair<>(birds.get(3), impulseRight));
-        keymap.put(KeyCode.I, new Pair<>(birds.get(3), impulseLeft));
-        keymap.put(KeyCode.O, new Pair<>(birds.get(3), impulseUp));
+        InputMapperNaive inputMapper = new InputMapperNaive(this);
 
         // Keyboard
         stage.getScene().setOnKeyPressed(e -> {
@@ -175,24 +156,15 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
             } else if (e.getCode().equals(KeyCode.DIGIT1)) {
                 birds.forEach(bird ->
                         actorList.actors.add(SimpleExplosion.make(bird.getX(), bird.getY(), 100, alphaize(bird.getColor()), graphRoot)));
-            } else if (!keymap.containsKey(e.getCode())) {
             } else {
-                Pair<Bird, Vector2D> pair = keymap.get(e.getCode());
-                handleInput(pair.getKey(), pair.getValue());
+                inputMapper.handleKeyInput(e);
             }
         });
 
         // Mouse
         stage.getScene().setOnMouseClicked(e -> {
             System.out.println(e.isPrimaryButtonDown() + "/" + e.isSecondaryButtonDown() + " " + e);
-            Bird b = birds.get(3);
-            if (e.getButton().equals(MouseButton.PRIMARY) ) {
-                handleInput(b, impulseLeft);
-            } else if (e.getButton().equals(MouseButton.SECONDARY)) {
-                handleInput(b, impulseRight);
-            } else if (e.getButton().equals(MouseButton.MIDDLE)) {
-                handleInput(b, impulseUp);
-            }
+            inputMapper.handleMouseInput(e);
         });
 
 //        // JInput JOYSTICK
@@ -205,7 +177,7 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         stage.setFullScreen(false);
     }
 
-    private void handleInput(Bird bird, Vector2D impulse) {
+    void handleInput(Bird bird, Vector2D impulse) {
         bird.addVel(impulse);
         double bal = calcBalance(bird.getX());
         rndChoice(flapClips, rnd).play(1.0, bal, 1, 0.0, 1);
@@ -237,7 +209,7 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
             }
         });
 
-        for (int a = 0; a < 3; ++a) {
+        for (int a = 0; a < birds.size(); ++a) {
             for (int b = a + 1; b < 4; ++b) {
                 Bird bird1 = birds.get(a);
                 Bounds bounds1 = bird1.getBounds();
