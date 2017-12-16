@@ -29,6 +29,13 @@ public class Bird implements Actor {
     private Vector2D gravity = new Vector2D(0, 400);
     private double maxYVel = 600;
 
+    private double VERT_IMPULSE = 200.0;
+    private double HORIZ_IMPULSE = 75.0;
+    private Vector2D RIGHT_IMPULSE = new Vector2D(HORIZ_IMPULSE, 0);
+    private Vector2D LEFT_IMPULSE = new Vector2D(-HORIZ_IMPULSE, 0);
+    private Vector2D UP_IMPULSE = new Vector2D(0, -VERT_IMPULSE);
+
+
     public Bird(double x, double y, String name, Color color, Pane parent) {
         this.name = name;
         this.color = color;
@@ -76,7 +83,7 @@ public class Bird implements Actor {
         this.vel = vel;
     }
 
-    public void addVel(Vector2D vel) {
+    private void addVel(Vector2D vel) {
         if (vel.getX() == 0.0) {
         } else {
             if (vel.getX() > 0) {
@@ -86,6 +93,18 @@ public class Bird implements Actor {
             }
         }
         this.vel = this.vel.add(vel);
+    }
+
+    public void handleRight() {
+        addVel(RIGHT_IMPULSE);
+    }
+
+    public void handleLeft() {
+        addVel(LEFT_IMPULSE);
+    }
+
+    public void handleFlap() {
+        addVel(UP_IMPULSE);
     }
 
     public Bounds getBounds() {

@@ -4,10 +4,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 public interface InputMapper {
-    default boolean handleInput(KeyEvent e) {
+    default boolean handleKeyInput(KeyEvent e) {
         return false;
     }
-    default boolean handleInput(MouseEvent e) {
+    default boolean handleMouseInput(MouseEvent e) {
         return false;
     }
 }

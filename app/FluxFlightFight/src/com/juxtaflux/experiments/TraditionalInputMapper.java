@@ -13,8 +13,8 @@ public class TraditionalInputMapper implements InputMapper {
         checkNotNull(game);
     }
 
-    public boolean handleInput(KeyEvent e) {
-        game.handleInput(game.getBirds().get(0), new Vector2D(0.0, -100.0));
+    public boolean handleKeyInput(KeyEvent e) {
+        game.getBirds().get(0).handleFlap();
         return true;
     }
 }
