@@ -147,7 +147,7 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         // FrameStepper
         stepper = new FrameStepper(this).register();
 
-        InputMapperNaive inputMapper = new InputMapperNaive(this);
+        InputMapper inputMapper = new NaiveInputMapper(this);
 
         // Keyboard
         stage.getScene().setOnKeyPressed(e -> {
@@ -157,14 +157,14 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
                 birds.forEach(bird ->
                         actorList.actors.add(SimpleExplosion.make(bird.getX(), bird.getY(), 100, alphaize(bird.getColor()), graphRoot)));
             } else {
-                inputMapper.handleKeyInput(e);
+                inputMapper.handleInput(e);
             }
         });
 
         // Mouse
         stage.getScene().setOnMouseClicked(e -> {
             System.out.println(e.isPrimaryButtonDown() + "/" + e.isSecondaryButtonDown() + " " + e);
-            inputMapper.handleMouseInput(e);
+            inputMapper.handleInput(e);
         });
 
 //        // JInput JOYSTICK
