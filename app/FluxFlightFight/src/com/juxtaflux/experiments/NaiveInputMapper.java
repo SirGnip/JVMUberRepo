@@ -1,13 +1,13 @@
 package com.juxtaflux.experiments;
 
+import com.juxtaflux.app.Bird;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -20,27 +20,28 @@ public class NaiveInputMapper implements InputMapper {
     NaiveInputMapper(KitchenSinkExample gameBackReference) {
         game = gameBackReference;
         checkNotNull(game);
-        checkArgument(game.getBirds().size() == 4, "Expected 4 birds.");
+        List<Bird> birds = game.getBirds();
+        checkArgument(birds.size() == 4, "Expected 4 birds.");
 
         // Keyboard
-        keymap.put(KeyCode.E, game.getBirds().get(0)::handleRight);
-        keymap.put(KeyCode.Q, game.getBirds().get(0)::handleLeft);
-        keymap.put(KeyCode.W, game.getBirds().get(0)::handleFlap);
-        keymap.put(KeyCode.RIGHT, game.getBirds().get(1)::handleRight);
-        keymap.put(KeyCode.LEFT, game.getBirds().get(1)::handleLeft);
-        keymap.put(KeyCode.UP, game.getBirds().get(1)::handleFlap);
-        keymap.put(KeyCode.B, game.getBirds().get(2)::handleRight);
-        keymap.put(KeyCode.C, game.getBirds().get(2)::handleLeft);
-        keymap.put(KeyCode.V, game.getBirds().get(2)::handleFlap);
-        keymap.put(KeyCode.P, game.getBirds().get(3)::handleRight);
-        keymap.put(KeyCode.I, game.getBirds().get(3)::handleLeft);
-        keymap.put(KeyCode.O, game.getBirds().get(3)::handleFlap);
+        keymap.put(KeyCode.E, () -> {Bird b = birds.get(0); b.handleRight(); game.doBirdSound(b);});
+        keymap.put(KeyCode.Q, () -> {Bird b = birds.get(0); b.handleLeft(); game.doBirdSound(b);});
+        keymap.put(KeyCode.W, () -> {Bird b = birds.get(0); b.handleFlap(); game.doBirdSound(b);});
+        keymap.put(KeyCode.RIGHT, () -> {Bird b = birds.get(1); b.handleRight(); game.doBirdSound(b);});
+        keymap.put(KeyCode.LEFT, () -> {Bird b = birds.get(1); b.handleLeft(); game.doBirdSound(b);});
+        keymap.put(KeyCode.UP, () -> {Bird b = birds.get(1); b.handleFlap(); game.doBirdSound(b);});
+        keymap.put(KeyCode.B, () -> {Bird b = birds.get(2); b.handleRight(); game.doBirdSound(b);});
+        keymap.put(KeyCode.C, () -> {Bird b = birds.get(2); b.handleLeft(); game.doBirdSound(b);});
+        keymap.put(KeyCode.V, () -> {Bird b = birds.get(2); b.handleFlap(); game.doBirdSound(b);});
+        keymap.put(KeyCode.P, () -> {Bird b = birds.get(3); b.handleRight(); game.doBirdSound(b);});
+        keymap.put(KeyCode.I, () -> {Bird b = birds.get(3); b.handleLeft(); game.doBirdSound(b);});
+        keymap.put(KeyCode.O, () -> {Bird b = birds.get(3); b.handleFlap(); game.doBirdSound(b);});
 
         // Mouse
         int BIRD_ID = 3;
-        mousemap.put(MouseButton.PRIMARY, game.getBirds().get(BIRD_ID)::handleRight);
-        mousemap.put(MouseButton.SECONDARY, game.getBirds().get(BIRD_ID)::handleLeft);
-        mousemap.put(MouseButton.MIDDLE, game.getBirds().get(BIRD_ID)::handleFlap);
+        mousemap.put(MouseButton.PRIMARY, () -> {Bird b = birds.get(BIRD_ID); b.handleLeft(); game.doBirdSound(b);});
+        mousemap.put(MouseButton.SECONDARY, () -> {Bird b = birds.get(BIRD_ID); b.handleRight(); game.doBirdSound(b);});
+        mousemap.put(MouseButton.MIDDLE, () -> {Bird b = birds.get(BIRD_ID); b.handleFlap(); game.doBirdSound(b);});
     }
 
     public boolean handleKeyInput(KeyEvent e) {

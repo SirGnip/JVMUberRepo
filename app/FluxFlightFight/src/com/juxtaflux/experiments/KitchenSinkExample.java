@@ -184,6 +184,12 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         actorList.actors.add(new LifetimeRect(Color.gray(0.2), 3, bird.getX(), bird.getY(), 3, graphRoot));
     }
 
+    void doBirdSound(Bird bird) {
+        double bal = calcBalance(bird.getX());
+        rndChoice(flapClips, rnd).play(1.0, bal, 1, 0.0, 1);
+        actorList.actors.add(new LifetimeRect(Color.gray(0.2), 3, bird.getX(), bird.getY(), 3, graphRoot));
+    }
+
     /**  Given an x value, return a value that can be used for audio balance (-1->1) */
     private double calcBalance(double x) {
         double norm = Flx.normalize(x, edges.getMinX(), edges.getMaxX());
