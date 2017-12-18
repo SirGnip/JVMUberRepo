@@ -16,6 +16,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.juxtaflux.fluxlib.Flx.*;
 
 public class Bird implements Actor {
@@ -28,6 +29,11 @@ public class Bird implements Actor {
     private Vector2D vel = new Vector2D(0, 120);
     private Vector2D gravity = new Vector2D(0, 400);
     private double maxYVel = 600;
+    private enum Facing {
+        LEFT, RIGHT, NEUTRAL;
+    }
+    private Facing facing = Facing.NEUTRAL;
+    private boolean isFlapDown = false;
 
     private double VERT_IMPULSE = 200.0;
     private double HORIZ_IMPULSE = 75.0;
@@ -71,41 +77,82 @@ public class Bird implements Actor {
         // noop
     }
 
-    public void stopAtEdge(Bounds edge) {
+    // block bird from leaving top or bottom, wrap on left and right sides
+    public void handleEdges(Bounds edges) {
         double slushAmount = 1;
-        Vector2D offset = escapingBy(getBounds(), edge, slushAmount);
-        x.setValue(x.get() + offset.getX());
-        y.setValue(y.get() + offset.getY());
-        vel = Vector2D.ZERO;
+        Vector2D offset = escapingBy(getBounds(), edges, slushAmount);
+        if (offset.getX() < 0.0) {
+            x.setValue(80);
+        } else if (offset.getX() > 0.0) {
+            x.setValue(edges.getMaxX() - 80);
+        }
+        if (offset.getY() != 0.0) {
+            y.setValue(y.get() + offset.getY());
+            vel = Vector2D.ZERO;
+        }
     }
+
+    // block bird when crossing any edge
+//    public void handleEdges(Bounds edges) {
+//        double slushAmount = 1;
+//        Vector2D offset = escapingBy(getBounds(), edges, slushAmount);
+//        x.setValue(x.get() + offset.getX());
+//        y.setValue(y.get() + offset.getY());
+//        vel = Vector2D.ZERO;
+//    }
 
     public void setVel(Vector2D vel) {
         this.vel = vel;
     }
 
     private void addVel(Vector2D vel) {
-        if (vel.getX() == 0.0) {
-        } else {
-            if (vel.getX() > 0) {
-                poly.setScaleX(1);
-            } else {
-                poly.setScaleX(-1);
-            }
-        }
         this.vel = this.vel.add(vel);
     }
 
+    // Naive input interface
     public void handleRight() {
         addVel(RIGHT_IMPULSE);
     }
-
     public void handleLeft() {
         addVel(LEFT_IMPULSE);
     }
-
     public void handleFlap() {
         addVel(UP_IMPULSE);
     }
+
+    // Traditional input interface
+    public void handlePressRight() {
+        poly.setScaleX(1);
+        facing = Facing.RIGHT;
+    }
+    public void handlePressLeft() {
+        poly.setScaleX(-1);
+        facing = Facing.LEFT;
+    }
+    public boolean handlePressFlap() {
+        if (isFlapDown) {
+            return false;
+        }
+        isFlapDown = true;
+        switch (facing) {
+            case RIGHT: handleFlap(); handleRight(); break;
+            case LEFT: handleFlap(); handleLeft(); break;
+            case NEUTRAL: handleFlap(); break;
+            default:
+                checkArgument(false, "Unexpected 'Facing' enum value");
+        }
+        return true;
+    }
+    public void handleReleaseRight() {
+        facing = Facing.NEUTRAL;
+    }
+    public void handleReleaseLeft() {
+        facing = Facing.NEUTRAL;
+    }
+    public void handleReleaseFlap() {
+        isFlapDown = false;
+    }
+
 
     public Bounds getBounds() {
         return poly.getBoundsInParent();

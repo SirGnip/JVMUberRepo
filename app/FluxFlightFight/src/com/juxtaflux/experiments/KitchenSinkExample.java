@@ -147,8 +147,8 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         // FrameStepper
         stepper = new FrameStepper(this).register();
 
-        InputMapper inputMapper = new NaiveInputMapper(this);
-//        InputMapper inputMapper = new TraditionalInputMapper(this);
+//        InputMapper inputMapper = new NaiveInputMapper(this);
+        InputMapper inputMapper = new TraditionalInputMapper(this);
 
         // Keyboard
         stage.getScene().setOnKeyPressed(e -> {
@@ -161,10 +161,16 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
                 inputMapper.handleKeyInput(e);
             }
         });
+        stage.getScene().setOnKeyReleased(e -> {
+            inputMapper.handleKeyInput(e);
+        });
 
         // Mouse
-        stage.getScene().setOnMouseClicked(e -> {
-            System.out.println(e.isPrimaryButtonDown() + "/" + e.isSecondaryButtonDown() + " " + e);
+        stage.getScene().setOnMousePressed(e -> {
+//            System.out.println(e.isPrimaryButtonDown() + "/" + e.isSecondaryButtonDown() + " " + e);
+            inputMapper.handleMouseInput(e);
+        });
+        stage.getScene().setOnMouseReleased(e -> {
             inputMapper.handleMouseInput(e);
         });
 
@@ -194,7 +200,6 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
     private double calcBalance(double x) {
         double norm = Flx.normalize(x, edges.getMinX(), edges.getMaxX());
         double balance = (norm * 2.0) - 1.0;
-        System.out.println(("BAL: "  + x + " " + balance));
         return balance;
     }
 
@@ -211,7 +216,8 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         }
         birds.forEach(bird -> {
             if (!edges.contains(bird.getBounds())) {
-                bird.stopAtEdge(edges);
+                bird.handleEdges(edges);
+//                bird.wrapAtEdge(edges);
             }
         });
 
@@ -235,7 +241,6 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
                 }
             }
         }
-
 
 
 //        // JInput JOYSTICK

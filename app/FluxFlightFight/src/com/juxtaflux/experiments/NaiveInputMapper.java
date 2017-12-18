@@ -45,6 +45,9 @@ public class NaiveInputMapper implements InputMapper {
     }
 
     public boolean handleKeyInput(KeyEvent e) {
+        if (e.getEventType() != KeyEvent.KEY_PRESSED) {
+            return false;
+        }
         if (! keymap.containsKey(e.getCode())) {
             return false;
         }
@@ -53,6 +56,9 @@ public class NaiveInputMapper implements InputMapper {
     }
 
     public boolean handleMouseInput(MouseEvent e) {
+        if (e.getEventType() != MouseEvent.MOUSE_PRESSED) {
+            return false;
+        }
         if (! mousemap.containsKey(e.getButton())) {
             return false;
         }
