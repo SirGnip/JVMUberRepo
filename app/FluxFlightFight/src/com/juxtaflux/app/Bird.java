@@ -35,8 +35,8 @@ public class Bird implements Actor {
     private Facing facing = Facing.NEUTRAL;
     private boolean isFlapDown = false;
 
-    private double VERT_IMPULSE = 200.0;
-    private double HORIZ_IMPULSE = 75.0;
+    private double VERT_IMPULSE = 100.0;
+    private double HORIZ_IMPULSE = 60.0;
     private Vector2D RIGHT_IMPULSE = new Vector2D(HORIZ_IMPULSE, 0);
     private Vector2D LEFT_IMPULSE = new Vector2D(-HORIZ_IMPULSE, 0);
     private Vector2D UP_IMPULSE = new Vector2D(0, -VERT_IMPULSE);
