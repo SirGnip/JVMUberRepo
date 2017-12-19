@@ -56,6 +56,7 @@ public class Bird implements Actor {
     public double getY() { return y.get(); }
     public Color getColor() { return color; }
     public String getName() { return name; }
+    public Vector2D getVel() { return vel; }
 
     @Override
     public void step(double delta) {

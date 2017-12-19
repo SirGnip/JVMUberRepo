@@ -1,9 +1,6 @@
 package com.juxtaflux.experiments;
 
-import com.juxtaflux.app.Bird;
-import com.juxtaflux.app.GenericLifetimeActor;
-import com.juxtaflux.app.LifetimeRect;
-import com.juxtaflux.app.SimpleExplosion;
+import com.juxtaflux.app.*;
 import com.juxtaflux.fluxlib.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -134,15 +131,25 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         });
         graphRoot.getChildren().add(btn);
 
+        int goalLevel = 500;
+        graphRoot.getChildren().add(Flx.makeLine(0, goalLevel, 800, goalLevel, Color.GRAY));
+
         // birds
         double startX = 100;
-        birds.add(new Bird(startX, 200,"Blue", alphaize(Color.BLUE), graphRoot));
+        birds.add(new Bird(startX, goalLevel,"Blue", alphaize(Color.BLUE), graphRoot));
         startX += 100;
-        birds.add(new Bird(startX, 200,"Red", alphaize(Color.RED), graphRoot));
+        birds.add(new Bird(startX, goalLevel,"Red", alphaize(Color.RED), graphRoot));
         startX += 100;
-        birds.add(new Bird(startX, 200,"Green", alphaize(Color.GREEN), graphRoot));
+        birds.add(new Bird(startX, goalLevel,"Green", alphaize(Color.GREEN), graphRoot));
         startX += 100;
-        birds.add(new Bird(startX, 200,"Yellow", alphaize(Color.YELLOW), graphRoot));
+        birds.add(new Bird(startX, goalLevel,"Yellow", alphaize(Color.YELLOW), graphRoot));
+
+        // Controller
+        new BirdAnimController(birds.get(1));
+        BirdHoverRuleController bController3 = new BirdHoverRuleController(birds.get(2), goalLevel);
+        BirdHoverRuleController bController4 = new BirdHoverRuleController(birds.get(3), goalLevel);
+        actorList.actors.add(bController3);
+        actorList.actors.add(bController4);
 
         // FrameStepper
         stepper = new FrameStepper(this).register();
