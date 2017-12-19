@@ -50,40 +50,40 @@ public class TraditionalInputMapper implements InputMapper {
         keyReleaseMap.put(KeyCode.DOWN, () -> {Bird b = birds.get(1); b.handleReleaseRight();});
         keyReleaseMap.put(KeyCode.RIGHT, () -> {Bird b = birds.get(1); b.handleReleaseFlap();});
 
-        keyPressMap.put(KeyCode.C, () -> {Bird b = birds.get(2); b.handlePressLeft();});
-        keyPressMap.put(KeyCode.V, () -> {Bird b = birds.get(2); b.handlePressRight();});
-        keyPressMap.put(KeyCode.B, () -> {
+        keyPressMap.put(KeyCode.U, () -> {Bird b = birds.get(2); b.handlePressLeft();});
+        keyPressMap.put(KeyCode.I, () -> {Bird b = birds.get(2); b.handlePressRight();});
+        keyPressMap.put(KeyCode.O, () -> {
             Bird b = birds.get(2);
             if (b.handlePressFlap()) {
                 game.doBirdSound(b);
             }});
-        keyReleaseMap.put(KeyCode.C, () -> {Bird b = birds.get(2); b.handleReleaseLeft();});
-        keyReleaseMap.put(KeyCode.V, () -> {Bird b = birds.get(2); b.handleReleaseRight();});
-        keyReleaseMap.put(KeyCode.B, () -> {Bird b = birds.get(2); b.handleReleaseFlap();});
+        keyReleaseMap.put(KeyCode.U, () -> {Bird b = birds.get(2); b.handleReleaseLeft();});
+        keyReleaseMap.put(KeyCode.I, () -> {Bird b = birds.get(2); b.handleReleaseRight();});
+        keyReleaseMap.put(KeyCode.O, () -> {Bird b = birds.get(2); b.handleReleaseFlap();});
 
-        keyPressMap.put(KeyCode.I, () -> {Bird b = birds.get(3); b.handlePressLeft();});
-        keyPressMap.put(KeyCode.O, () -> {Bird b = birds.get(3); b.handlePressRight();});
-        keyPressMap.put(KeyCode.P, () -> {
+        keyPressMap.put(KeyCode.SEMICOLON, () -> {Bird b = birds.get(3); b.handlePressLeft();});
+        keyPressMap.put(KeyCode.QUOTE, () -> {Bird b = birds.get(3); b.handlePressRight();});
+        keyPressMap.put(KeyCode.ENTER, () -> {
             Bird b = birds.get(3);
             if (b.handlePressFlap()) {
                 game.doBirdSound(b);
             }});
-        keyReleaseMap.put(KeyCode.I, () -> {Bird b = birds.get(3); b.handleReleaseLeft();});
-        keyReleaseMap.put(KeyCode.O, () -> {Bird b = birds.get(3); b.handleReleaseRight();});
-        keyReleaseMap.put(KeyCode.P, () -> {Bird b = birds.get(3); b.handleReleaseFlap();});
+        keyReleaseMap.put(KeyCode.SEMICOLON, () -> {Bird b = birds.get(3); b.handleReleaseLeft();});
+        keyReleaseMap.put(KeyCode.QUOTE, () -> {Bird b = birds.get(3); b.handleReleaseRight();});
+        keyReleaseMap.put(KeyCode.ENTER, () -> {Bird b = birds.get(3); b.handleReleaseFlap();});
 
         // Mouse
         int BIRD_ID = 3;
         mousePressMap.put(MouseButton.PRIMARY, () -> {Bird b = birds.get(BIRD_ID); b.handlePressLeft();});
-        mousePressMap.put(MouseButton.SECONDARY, () -> {Bird b = birds.get(BIRD_ID); b.handlePressRight();});
-        mousePressMap.put(MouseButton.MIDDLE, () -> {
+        mousePressMap.put(MouseButton.MIDDLE, () -> {Bird b = birds.get(BIRD_ID); b.handlePressRight();});
+        mousePressMap.put(MouseButton.SECONDARY, () -> {
             Bird b = birds.get(BIRD_ID);
             if (b.handlePressFlap()) {
                 game.doBirdSound(b);
             }});
         mouseReleaseMap.put(MouseButton.PRIMARY, () -> {Bird b = birds.get(BIRD_ID); b.handleReleaseLeft();});
-        mouseReleaseMap.put(MouseButton.SECONDARY, () -> {Bird b = birds.get(BIRD_ID); b.handleReleaseRight();});
-        mouseReleaseMap.put(MouseButton.MIDDLE, () -> {Bird b = birds.get(BIRD_ID); b.handleReleaseFlap();});
+        mouseReleaseMap.put(MouseButton.MIDDLE, () -> {Bird b = birds.get(BIRD_ID); b.handleReleaseRight();});
+        mouseReleaseMap.put(MouseButton.SECONDARY, () -> {Bird b = birds.get(BIRD_ID); b.handleReleaseFlap();});
     }
 
     public boolean handleKeyInput(KeyEvent e) {

@@ -38,13 +38,15 @@ public class KeyboardRolloverUtil extends ExampleBase {
     private boolean[] state = new boolean[256];
 
     public void dumpState() {
+        int ct = 0;
+        String msg = "";
         for (int i = 0; i < state.length; ++i) {
             if (state[i]) {
-                System.out.printf("%-12s", KeyCode.values()[i].getName()); // print key names
-//                System.out.printf("%3d ", i); // uncomment to print out integers instead of key names
+                ct++;
+                msg += String.format("%-12s", KeyCode.values()[i].getName()); // print key names
             }
         }
-        System.out.println("");
+        System.out.println(ct + "|" + msg);
     }
     private void handleEvt(KeyEvent e) {
         if (e.getEventType() == KeyEvent.KEY_TYPED) { return; }
