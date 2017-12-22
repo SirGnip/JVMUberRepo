@@ -145,11 +145,11 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         birds.add(new Bird(startX, goalLevel,"Yellow", alphaize(Color.YELLOW), graphRoot));
 
         // Controller
-        new BirdAnimController(birds.get(1));
-        BirdHoverRuleController bController3 = new BirdHoverRuleController(birds.get(2), goalLevel);
-        BirdHoverRuleController bController4 = new BirdHoverRuleController(birds.get(3), goalLevel);
-        actorList.actors.add(bController3);
-        actorList.actors.add(bController4);
+        new BirdAnimController(birds.get(0));
+        BirdHoverRuleController bController1 = new BirdHoverRuleController(birds.get(1), 250, 10, 4);
+        actorList.actors.add(bController1);
+        BirdHoverAndFlyController bController2 = new BirdHoverAndFlyController(birds.get(2), goalLevel, 5, 3, 1);
+        actorList.actors.add(bController2);
 
         // FrameStepper
         stepper = new FrameStepper(this).register();

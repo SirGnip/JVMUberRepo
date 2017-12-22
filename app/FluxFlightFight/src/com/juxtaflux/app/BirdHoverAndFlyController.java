@@ -7,30 +7,28 @@ import javafx.util.Duration;
 
 import java.util.function.Consumer;
 
-/** A rule-based controller that makes a bird hover in place for a period of time */
-/*
-A hover rule like this will slingshot/oscillate. Oscillation happens because with a simple rule like this
-the further away from the goal you are, the longer the time you have to correct. This means that
-by the time you hit the goal, your velocity is very high becuase it is possible to accelerate to a
-high velocity.  So, to stop the oscillation, cap the velocity to some constant so that it can't grow without
-bounds.
-*/
-public class BirdHoverRuleController implements Actor {
+/** A rule-based controller that makes a bird hover, fly to the side, slow down, drop */
+public class BirdHoverAndFlyController implements Actor {
     private Bird bird;
     private int goalHeight;
     private final double MAX_Y_VEL = -50.0;
     private Consumer<Double> state;
 
-    public BirdHoverRuleController(Bird bird, int goalHeight, double hoverDuration, double quietDuration) {
+    public BirdHoverAndFlyController(Bird bird, int goalHeight, double hoverDur, double quietDur, double horizAccelDur) {
         this.bird = bird;
         this.goalHeight = goalHeight;
         transitionToQuiet();
 
         // animate transitions
         Timeline timeline = new Timeline();
+        double dur = 0.0;
         timeline.getKeyFrames().addAll(
-                new KeyFrame(Duration.seconds(quietDuration), (e) -> transitionToHover()),
-                new KeyFrame(Duration.seconds(quietDuration + hoverDuration), (e) -> transitionToQuiet())
+                new KeyFrame(Duration.seconds(dur += quietDur), (e) -> transitionToHover()),
+                new KeyFrame(Duration.seconds(dur += hoverDur), (e) -> startPressRight()),
+                new KeyFrame(Duration.seconds(dur += horizAccelDur), (e) -> stopPressRight()),
+                new KeyFrame(Duration.seconds(dur += hoverDur), (e) -> startPressLeft()), // this is an unreliable way to stop horizontal acceleration. But, it is simple.
+                new KeyFrame(Duration.seconds(dur += horizAccelDur), (e) -> stopPressLeft()),
+                new KeyFrame(Duration.seconds(dur += hoverDur), (e) -> transitionToQuiet())
         );
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
@@ -43,6 +41,14 @@ public class BirdHoverRuleController implements Actor {
     private void transitionToHover() {
         state = this::hoverStep;
     }
+
+    private void startPressRight() { bird.handlePressRight(); }
+
+    private void stopPressRight() { bird.handleReleaseRight(); }
+
+    private void startPressLeft() { bird.handlePressLeft(); }
+
+    private void stopPressLeft() { bird.handleReleaseLeft(); }
 
     @Override
     public void step(double delta) {
