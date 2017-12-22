@@ -29,6 +29,7 @@ public class Bird implements Actor {
     private Vector2D vel = new Vector2D(0, 120);
     private Vector2D gravity = new Vector2D(0, 400);
     private double maxYVel = 600;
+    private double maxXVel = 600;
     private enum Facing {
         LEFT, RIGHT, NEUTRAL;
     }
@@ -63,7 +64,12 @@ public class Bird implements Actor {
         Vector2D offset = new Vector2D(delta, vel);
         Vector2D newPos = new Vector2D(x.get(), y.get()).add(offset);
         vel = vel.add(new Vector2D(delta, gravity));
+
+        // clamp velocity
         vel = vel.getY() > maxYVel ? new Vector2D(vel.getX(), maxYVel) : vel;
+        vel = vel.getX() > maxXVel ? new Vector2D(maxXVel, vel.getY()) : vel;
+        vel = vel.getX() < -maxXVel ? new Vector2D(-maxXVel, vel.getY()) : vel;
+
         x.setValue(newPos.getX());
         y.setValue(newPos.getY());
     }
