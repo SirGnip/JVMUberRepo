@@ -30,6 +30,8 @@ public class Bird implements Actor {
     private Vector2D gravity = new Vector2D(0, 400);
     private double maxYVel = 600;
     private double maxXVel = 600;
+    private boolean leftPressed = false;
+    private boolean rightPressed = false;
     private enum Facing {
         LEFT, RIGHT, NEUTRAL;
     }
@@ -127,14 +129,28 @@ public class Bird implements Actor {
         addVel(UP_IMPULSE);
     }
 
+    private void calcDirection() {
+        if (leftPressed && rightPressed) {
+            // noop
+        } else if (leftPressed) {
+            facing = Facing.LEFT;
+            poly.setScaleX(-1);
+        } else if (rightPressed) {
+            facing = Facing.RIGHT;
+            poly.setScaleX(1);
+        } else {
+            facing = Facing.NEUTRAL;
+        }
+    }
+
     // Traditional input interface
     public void handlePressRight() {
-        poly.setScaleX(1);
-        facing = Facing.RIGHT;
+        rightPressed = true;
+        calcDirection();
     }
     public void handlePressLeft() {
-        poly.setScaleX(-1);
-        facing = Facing.LEFT;
+        leftPressed = true;
+        calcDirection();
     }
     public boolean handlePressFlap() {
         if (isFlapDown) {
@@ -151,15 +167,16 @@ public class Bird implements Actor {
         return true;
     }
     public void handleReleaseRight() {
-        facing = Facing.NEUTRAL;
+        rightPressed = false;
+        calcDirection();
     }
     public void handleReleaseLeft() {
-        facing = Facing.NEUTRAL;
+        leftPressed = false;
+        calcDirection();
     }
     public void handleReleaseFlap() {
         isFlapDown = false;
     }
-
 
     public Bounds getBounds() {
         return poly.getBoundsInParent();

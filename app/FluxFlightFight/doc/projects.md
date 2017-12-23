@@ -11,26 +11,22 @@
 
 Sequence:
 - put in source control (uber repo), keep it local for now
-    - turn on source control integration in IntelliJ
+    - x turn on source control integration in IntelliJ
 - x the "higher joust" mechanic
 - x death and respawn of player
-- rework input behavior: should be two directions and one to flap, not 3 flapping directions
+- x rework input behavior: should be two directions and one to flap, not 3 flapping directions
     - idea of how to track state: https://stackoverflow.com/a/13017419
         - though, i could do a big array like this, or i could just track the state im interested in for each object
-    - have visual to reflect direction of bird?
-    - can i have that may keys pressed at the same time (4 players, each player will be holding a direction key down)
+    - x have visual to reflect direction of bird?
+    - x can i have that may keys pressed at the same time (4 players, each player will be holding a direction key down)
     - one part of this will be determining state of keys (is it down?) which means I'll have to deal with key-repeat.
         - it appears that a keyboard is split into zones. a max number of keys *in a certain zone* can be held down at once. I'll probably need to choose keys that span zones.
         - in a text editor, press three keys next to each other at the same time. if they are in the same zone, you will hear a "beep" and see no characters typed. Keep hitting these three keys
         - it feels like each zone can handle a max of two keypresses at the same time. 
-        - maybe write a utility to print the state of each key (detects key)
-            - make sure key repeat is not an issue
+        - x maybe write a utility to print the state of each key (detects key)
+            - x make sure key repeat is not an issue
         - Keyboard "rollover" https://en.wikipedia.org/wiki/Rollover_(key)    
-
-
-    
-    
-    
+        
 - scoreboard
 - add level obstacles (platforms to land on)
 - (at this point, decide if it would be better to work on "walking" first, or "NPC's" first)
@@ -39,6 +35,7 @@ Sequence:
         - goal: have Actors that can be controlled by automation (NPC) or humans (uses InputConfigs). Some NPC behavior may be shared with Player (scores, respawning), while some is unique to NPC. 
         - goal: how do i share certain behavior while keeping it separate?
         - goal: have a lot of functionality that can be driven by either user input and programmatic control.
+    - do i have separate classes to track things differently for "player" and "enemy" (like score, etc). Or, are NPC's just autoated players that are completely like players (have score, can be controlled by input, etc))
 - death and respawn of NPC
 - very simple NPC behavior (hover, random movement with hovering, etc.)
 - walking on ground physics
@@ -55,10 +52,10 @@ Sequence:
     - git in git, maybe github after this is done as things will have stabalized some
     - slight rework on bird visuals
 - Now that this is done, do i have all of my external systems (input, sound, graphics, logging? packaging?, fullscreen?, ui, input registration, controllers)
+    - at this point my external systems aren't perfect, flexible, or reusable. but I've touched everything. Will inform future direction.
     - collision detection
     - actors w/ lifetime
     - (automated controllers, input based ocntorllers, audio manager, actors, unit testing, dependency injection, game shell state-machine, animation, simulation, particle system, actors, audio authoring pipeline, graphics authoring pipeline, level design pipeline, concurrency?, multi-jar, error handling (nulls, checked/nonchecked exceptions?, startup), build and deploy dependencies (have batch script to deploy everything to a folder I can copy to another machine to run w/ start script?))
-
 
 # Future Milestone brainstorm
   - support a "round" system like Snake that allows for different game goals, objectives, scoring

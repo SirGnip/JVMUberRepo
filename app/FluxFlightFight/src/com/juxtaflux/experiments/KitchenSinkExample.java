@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.juxtaflux.fluxlib.Flx.*;
-import static java.lang.Thread.sleep;
 
 public class KitchenSinkExample extends ExampleBase implements Stepable {
     private List<Bird> birds = new ArrayList<>();
