@@ -9,6 +9,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
@@ -18,6 +19,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 // JInput JOYSTICK
 //import net.java.games.input.Controller;
@@ -134,14 +136,30 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         graphRoot.getChildren().add(Flx.makeLine(0, goalLevel, 800, goalLevel, Color.GRAY));
 
         // birds
+        int initialScore = 0;
         double startX = 100;
-        birds.add(new Bird(startX, goalLevel,"Blue", alphaize(Color.BLUE), graphRoot));
+        birds.add(new Bird(startX, goalLevel,"Blue", alphaize(Color.BLUE), graphRoot, initialScore));
         startX += 100;
-        birds.add(new Bird(startX, goalLevel,"Red", alphaize(Color.RED), graphRoot));
+        birds.add(new Bird(startX, goalLevel,"Red", alphaize(Color.RED), graphRoot, initialScore));
         startX += 100;
-        birds.add(new Bird(startX, goalLevel,"Green", alphaize(Color.GREEN), graphRoot));
+        birds.add(new Bird(startX, goalLevel,"Green", alphaize(Color.GREEN), graphRoot, initialScore));
         startX += 100;
-        birds.add(new Bird(startX, goalLevel,"Yellow", alphaize(Color.YELLOW), graphRoot));
+        birds.add(new Bird(startX, goalLevel,"Yellow", alphaize(Color.YELLOW), graphRoot, initialScore));
+
+        // scoreboard
+        int scoreX = 50;
+        Font scoreFont = new Font(30);
+        for (Bird bird: birds) {
+            Label score = new Label("Score: " + initialScore);
+            score.setTextFill(bird.getColor());
+            score.setFont(scoreFont);
+            score.setTranslateX(scoreX += 170);;
+            score.setTranslateY(5);
+            graphRoot.getChildren().add(score);
+            bird.scoreProperty().addListener( (obs, old, cur) -> {
+                score.setText("Score: " + cur);
+            });
+        }
 
         // Controller
         new BirdAnimController(birds.get(0));
@@ -239,15 +257,16 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
                     actorList.actors.add(SimpleExplosion.make(intersectPt, 50, alphaize(Color.WHITE, 0.5), graphRoot));
                     if (bounds1.getMinY() < bounds2.getMinY()) {
                         System.out.println("higher joust by " + bird1.getName());
+                        bird1.changeScore(1);
                         bird2.doDie();
                     } else if (bounds2.getMinY() < bounds1.getMinY()) {
                         System.out.println("higher joust by " + bird2.getName());
+                        bird2.changeScore(1);
                         bird1.doDie();
                     }
                 }
             }
         }
-
 
 //        // JInput JOYSTICK
 //        joyStep();

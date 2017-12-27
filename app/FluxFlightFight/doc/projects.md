@@ -7,7 +7,7 @@
     - optimize order of working on stuff for exposing maximum number of "useable" features to humans (so they can play with stuff earlier) 
     - keyboard and mouse only?
     - hardcoded input configs
-    - basic game flow (title screen, choose # of players, round start, round end and show score, play again)
+    - basic game flow (title screen, choose # of players, reasonable input layout, round start, round end and show score, play again)
 
 Sequence:
 - put in source control (uber repo), keep it local for now
@@ -35,7 +35,7 @@ Sequence:
         - goal: have Actors that can be controlled by automation (NPC) or humans (uses InputConfigs). Some NPC behavior may be shared with Player (scores, respawning), while some is unique to NPC. 
         - goal: how do i share certain behavior while keeping it separate?
         - goal: have a lot of functionality that can be driven by either user input and programmatic control.
-    - do i have separate classes to track things differently for "player" and "enemy" (like score, etc). Or, are NPC's just autoated players that are completely like players (have score, can be controlled by input, etc))
+    - do i have separate classes to track things differently for "player" and "enemy" (like score, etc). Or, are NPC's just automated players that are completely like players (have score, can be controlled by input, etc))
 - death and respawn of NPC
 - very simple NPC behavior (hover, random movement with hovering, etc.)
 - walking on ground physics
@@ -49,7 +49,7 @@ Sequence:
     - NPC's with basic patterns (hover, oscillate back and forth, a small set of behaviors they randomly pick from)
         - hover, move left, move right, rise, fall, fall and walk, fly towards nearest character, fly away from character 
     - tweak falling/flying physics (might need to tweak scale of players and size of screen)
-    - git in git, maybe github after this is done as things will have stabalized some
+    - get in git, maybe github after this is done as things will have stabilized some
     - slight rework on bird visuals
 - Now that this is done, do i have all of my external systems (input, sound, graphics, logging? packaging?, fullscreen?, ui, input registration, controllers)
     - at this point my external systems aren't perfect, flexible, or reusable. but I've touched everything. Will inform future direction.

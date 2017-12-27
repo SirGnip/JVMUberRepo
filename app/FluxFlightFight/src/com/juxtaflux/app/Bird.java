@@ -5,6 +5,8 @@ import com.juxtaflux.fluxlib.Flx;
 import javafx.animation.Animation;
 import javafx.animation.RotateTransition;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -12,7 +14,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.util.Duration;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class Bird implements Actor {
     private Color color;
     private DoubleProperty x;
     private DoubleProperty y;
+    private IntegerProperty score; // TODO: remove from Actor
     private Polygon poly;
     private Vector2D vel = new Vector2D(0, 120);
     private Vector2D gravity = new Vector2D(0, 400);
@@ -45,12 +47,13 @@ public class Bird implements Actor {
     private Vector2D UP_IMPULSE = new Vector2D(0, -VERT_IMPULSE);
 
 
-    public Bird(double x, double y, String name, Color color, Pane parent) {
+    public Bird(double x, double y, String name, Color color, Pane parent, int startScore) {
         this.name = name;
         this.color = color;
         parent.getChildren().add(makeGraphRoot());
         this.x.setValue(x);
         this.y.setValue(y);
+        this.score = new SimpleIntegerProperty(startScore);
     }
 
     public double getX() {
@@ -60,6 +63,11 @@ public class Bird implements Actor {
     public Color getColor() { return color; }
     public String getName() { return name; }
     public Vector2D getVel() { return vel; }
+    public void changeScore(int scoreDelta) { score.set(score.get() + scoreDelta); }
+    public IntegerProperty scoreProperty() {
+        return score;
+    }
+
 
     @Override
     public void step(double delta) {
