@@ -2,6 +2,7 @@ package com.juxtaflux.experiments;
 
 import com.juxtaflux.app.*;
 import com.juxtaflux.fluxlib.*;
+import javafx.animation.ScaleTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.BoundingBox;
@@ -26,6 +27,7 @@ import javafx.stage.Stage;
 //import net.java.games.input.ControllerEnvironment;
 //import net.java.games.input.Event;
 //import net.java.games.input.EventQueue;
+import javafx.util.Duration;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.io.*;
@@ -155,9 +157,18 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
             score.setFont(scoreFont);
             score.setTranslateX(scoreX += 170);;
             score.setTranslateY(5);
+
+            ScaleTransition pulse = new ScaleTransition(Duration.seconds(0.4), score);
+            pulse.setByX(1.2);
+            pulse.setByY(1.2);
+            pulse.setCycleCount(2);
+            pulse.setAutoReverse(true);
+
             graphRoot.getChildren().add(score);
             bird.scoreProperty().addListener( (obs, old, cur) -> {
                 score.setText("Score: " + cur);
+                pulse.jumpTo(Duration.ZERO); // This seems to keep scale in a good state when multiple animations are triggered and overlap
+                pulse.play();
             });
         }
 
