@@ -26,8 +26,7 @@ Sequence:
         - x maybe write a utility to print the state of each key (detects key)
             - x make sure key repeat is not an issue
         - Keyboard "rollover" https://en.wikipedia.org/wiki/Rollover_(key)    
-        
-- scoreboard
+- x scoreboard
 - add level obstacles (platforms to land on)
 - (at this point, decide if it would be better to work on "walking" first, or "NPC's" first)
 - NPC
@@ -35,7 +34,7 @@ Sequence:
         - goal: have Actors that can be controlled by automation (NPC) or humans (uses InputConfigs). Some NPC behavior may be shared with Player (scores, respawning), while some is unique to NPC. 
         - goal: how do i share certain behavior while keeping it separate?
         - goal: have a lot of functionality that can be driven by either user input and programmatic control.
-    - do i have separate classes to track things differently for "player" and "enemy" (like score, etc). Or, are NPC's just automated players that are completely like players (have score, can be controlled by input, etc))
+    - do i have separate data I need to track for "players" and "enemies" (like score, etc). Or, are NPC's just automated players that are completely like players (have score, can be controlled by input, etc)
 - death and respawn of NPC
 - very simple NPC behavior (hover, random movement with hovering, etc.)
 - walking on ground physics
@@ -43,12 +42,12 @@ Sequence:
 - physics of player responding to obstacles (wrap around screen? bounce off of wall? bounce off platform? walk vs fly?)
 - "shell" (title screen, title screen, initial question, gameplay, round end)
 - bonus: things that are just a bit more "polish" that might be nice:
-    - keyboard w/ no repeat
+    - x keyboard w/ no repeat
     - fullscreen and try on TV
     - a pass on sound (flapping w/ variety, crash, walking)
     - NPC's with basic patterns (hover, oscillate back and forth, a small set of behaviors they randomly pick from)
         - hover, move left, move right, rise, fall, fall and walk, fly towards nearest character, fly away from character 
-    - tweak falling/flying physics (might need to tweak scale of players and size of screen)
+    - tweak falling/flying physics to be more fun as I just picked rough values to start with (might need to tweak scale of players and size of screen)
     - get in git, maybe github after this is done as things will have stabilized some
     - slight rework on bird visuals
 - Now that this is done, do i have all of my external systems (input, sound, graphics, logging? packaging?, fullscreen?, ui, input registration, controllers)

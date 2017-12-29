@@ -152,7 +152,7 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         int scoreX = 50;
         Font scoreFont = new Font(30);
         for (Bird bird: birds) {
-            Label score = new Label("Score: " + initialScore);
+            Label score = new Label(bird.getName() + ": " + initialScore);
             score.setTextFill(bird.getColor());
             score.setFont(scoreFont);
             score.setTranslateX(scoreX += 170);;
@@ -166,7 +166,7 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
 
             graphRoot.getChildren().add(score);
             bird.scoreProperty().addListener( (obs, old, cur) -> {
-                score.setText("Score: " + cur);
+                score.setText(bird.getName() + ": " + cur);
                 pulse.jumpTo(Duration.ZERO); // This seems to keep scale in a good state when multiple animations are triggered and overlap
                 pulse.play();
             });
