@@ -255,9 +255,6 @@ public class Controller implements Initializable {
         if (chkStoreOnFocus.isSelected()) {
             appendToClipBuffersAndShowStatus(SysClipboard.read()); // read and store first clip when app first opens
         }
-
-        txtHelpHeader.setText("my code header\n");
-        txtHelpBody.setText("the body\nand the end goes ehre djs ladfkj aldskjf alskdjf a;lksjfd");
     }
 
     public void onBuffersKeyPressed(KeyEvent e) {

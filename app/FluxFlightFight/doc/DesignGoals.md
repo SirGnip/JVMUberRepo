@@ -1,3 +1,15 @@
+
+# Brainstorm (Do i want to keep this?)
+Arch layer 1
+
+- Game logic, sound, graphics, input, tests
+
+Arch layer 2
+
+- graphics, animation, simulation, math, collision detection, ui, game state, music, sfx, tests, keybd, mouse, joystick, controllers (human and auto), player, npc, pickups, particle system (is a cloud in particle system just an ActorList?), tools for designing game visuals and level editor (inkscape and svg)? State transition
+
+
+
 # Design goals:
 
 - support scene graph animation and motion from simulation

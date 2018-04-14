@@ -57,8 +57,8 @@
             <Button fx:id="btnAppend" layoutX="187.0" layoutY="15.0" mnemonicParsing="false" onAction="#onBtnAppend" onMouseEntered="#onMouseEnter" onMouseExited="#onMouseExit" text="append" />
             <Button fx:id="btnJoin" layoutX="263.0" layoutY="15.0" mnemonicParsing="false" onAction="#onBtnJoin" onMouseEntered="#onMouseEnter" onMouseExited="#onMouseExit" text="join" />
             <Button fx:id="btnDiff" layoutX="339.0" layoutY="15.0" mnemonicParsing="false" onAction="#onBtnDiff" onMouseEntered="#onMouseEnter" onMouseExited="#onMouseExit" text="diff" />
-            <Button fx:id="btnUp" layoutX="415.0" layoutY="15.0" mnemonicParsing="false" onAction="#onBtnUp" onMouseEntered="#onMouseEnter" onMouseExited="#onMouseExit" text="^" />
-            <Button fx:id="btnDown" layoutX="491.0" layoutY="15.0" mnemonicParsing="false" onAction="#onBtnDown" onMouseEntered="#onMouseEnter" onMouseExited="#onMouseExit" text="V" />
+            <Button fx:id="btnUp" layoutX="415.0" layoutY="15.0" mnemonicParsing="false" onAction="#onBtnUp" onMouseEntered="#onMouseEnter" onMouseExited="#onMouseExit" text="&#x25B2;" />
+            <Button fx:id="btnDown" layoutX="491.0" layoutY="15.0" mnemonicParsing="false" onAction="#onBtnDown" onMouseEntered="#onMouseEnter" onMouseExited="#onMouseExit" text="&#x25BC;" />
             </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -165,17 +165,17 @@
       </HBox>
       <TextFlow maxHeight="-Infinity" minHeight="-Infinity" prefHeight="80.0" VBox.vgrow="NEVER">
          <children>
-            <Text fx:id="txtHelpHeader" strokeType="OUTSIDE" strokeWidth="0.0" text="My title">
+            <Text fx:id="txtHelpHeader" strokeType="OUTSIDE" strokeWidth="0.0">
                <font>
                   <Font name="System Bold Italic" size="15.0" />
                </font>
             </Text>
-            <Text fx:id="txtHelpBody" strokeType="OUTSIDE" strokeWidth="0.0" text="My full text that goes on and on and on" />
+            <Text fx:id="txtHelpBody" strokeType="OUTSIDE" strokeWidth="0.0" />
          </children>
          <VBox.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </VBox.margin>
       </TextFlow>
-        <StatusBar fx:id="statusBar" text="MyStatusBar" VBox.vgrow="NEVER" />
+        <StatusBar fx:id="statusBar" VBox.vgrow="NEVER" />
     </children>
 </VBox>
