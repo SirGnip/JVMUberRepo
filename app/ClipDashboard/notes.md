@@ -1,9 +1,10 @@
 (personal working notes and brainstorms)
     
 # next actions
+- report exceptions as they just get dumped to stdout now
+- In clipdashboard toolbox, highlight the UI somehow (color backbround?) when I have one of the "do soemthing when app gets the focus" actions in place. could be confusing.
+Create a "store" button that is bigger, as it is used often
 
-- can I build code and jar from command line? (exercise to help me understand what is going on)
-- skim docs/tutorials on streams?
     
 # roadmap
 
