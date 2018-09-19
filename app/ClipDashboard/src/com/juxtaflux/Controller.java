@@ -127,9 +127,9 @@ public class Controller implements Initializable {
     @FXML
     private Button btnRetrieve;
     @FXML
-    private TextArea log;
+    public TextArea log;
     @FXML
-    private StatusBar statusBar;
+    public StatusBar statusBar;
 
     @FXML
     private CheckMenuItem chkStoreOnFocus;

@@ -8,10 +8,14 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class Main extends Application {
+    public static Controller staticController;
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Thread.setDefaultUncaughtExceptionHandler(Main::handleException);
         final String UI_LAYOUT_FILENAME = "/ClipDashboard.fxml";
         final String ICON_FILENAME = "/ClipDashboardIcon.ico";
         System.out.println("Application starting. Loading UI layout from " + UI_LAYOUT_FILENAME);
@@ -36,6 +40,15 @@ public class Main extends Application {
         Controller controller = loader.getController();
         controller.onReady(primaryStage);
         AppFramework.dump(root);
+        staticController = controller;
+    }
+
+    private static void handleException(Thread t, Throwable e) {
+        e.printStackTrace(System.out);
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        staticController.statusBar.showErr("EXCEPTION! " + e.getClass().getName() + " See 'Log' tab for details");
+        staticController.log.insertText(0, "Got exception: " + e.toString() + "\n" + sw.toString());
     }
 
     public static void main(String[] args) {
