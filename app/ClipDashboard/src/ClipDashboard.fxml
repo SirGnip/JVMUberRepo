@@ -34,11 +34,11 @@
                         <MenuItem mnemonicParsing="false" onAction="#onMenuExitItem" text="Exit" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="Buffer">
+                <Menu fx:id="menuBuffer" mnemonicParsing="false" text="Buffer">
                     <items>
-                        <CheckMenuItem fx:id="chkStoreOnFocus" mnemonicParsing="false" text="Store clipboard to buffer when app gets focus" />
-                  <CheckMenuItem fx:id="chkRetrieveOnFocus" mnemonicParsing="false" text="Retrieve selected clip when app gets focus" />
-                        <CheckMenuItem fx:id="chkVariableSubstitution" mnemonicParsing="false" text="Substitute variables (ex: ${0}, ${1}, ${clip}) when retrieving a buffer into the clipboard" />
+                        <CheckMenuItem fx:id="chkStoreOnFocus" mnemonicParsing="false" onAction="#onStoreOnFocusToggled" text="Store clipboard to buffer when app gets focus" />
+                  <CheckMenuItem fx:id="chkRetrieveOnFocus" mnemonicParsing="false" onAction="#onRetrieveOnFocusToggled" text="Retrieve selected clip when app gets focus" />
+                        <CheckMenuItem fx:id="chkVariableSubstitution" mnemonicParsing="false" onAction="#onVariableSubstitutionToggled" text="Substitute variables (ex: ${0}, ${1}, ${clip}) when retrieving a buffer into the clipboard" />
                     </items>
                 </Menu>
             </menus>

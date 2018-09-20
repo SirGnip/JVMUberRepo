@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.*;
@@ -132,6 +133,8 @@ public class Controller implements Initializable {
     public StatusBar statusBar;
 
     @FXML
+    private Menu menuBuffer;
+    @FXML
     private CheckMenuItem chkStoreOnFocus;
     @FXML
     private CheckMenuItem chkRetrieveOnFocus;
@@ -164,7 +167,7 @@ public class Controller implements Initializable {
 
     public void onMouseEnter(MouseEvent e) {
         Button b = (Button) e.getSource();
-        if (! buttonMap.containsKey(b.getId())) { throw new RuntimeException("Control ID doesn't exist in map: " + b.getId()); };
+        if (!buttonMap.containsKey(b.getId())) { throw new RuntimeException("Control ID doesn't exist in map: " + b.getId()); };
         ButtonSetup stuff = buttonMap.get(b.getId());
         for (TextField f : stuff.disable) {
             f.setDisable(true);
@@ -174,7 +177,7 @@ public class Controller implements Initializable {
     }
     public void onMouseExit(MouseEvent e) {
         Button b = (Button) e.getSource();
-        if (! buttonMap.containsKey(b.getId())) { throw new RuntimeException("Control ID doesn't exist in map: " + b.getId()); };
+        if (!buttonMap.containsKey(b.getId())) { throw new RuntimeException("Control ID doesn't exist in map: " + b.getId()); };
         ButtonSetup stuff = buttonMap.get(b.getId());
         for (TextField f : stuff.disable) {
             f.setDisable(false);
@@ -252,8 +255,35 @@ public class Controller implements Initializable {
             }
         });
 
+        updateBufferMenuDecoration();
         if (chkStoreOnFocus.isSelected()) {
             appendToClipBuffersAndShowStatus(SysClipboard.read()); // read and store first clip when app first opens
+        }
+    }
+
+    public void onStoreOnFocusToggled() {
+        updateBufferMenuDecoration();
+    }
+
+    public void onRetrieveOnFocusToggled() {
+        updateBufferMenuDecoration();
+    }
+
+    public void onVariableSubstitutionToggled() {
+        updateBufferMenuDecoration();
+    }
+
+    private boolean isAnythingInBufferMenuChecked() {
+        return (
+            chkStoreOnFocus.isSelected() || chkRetrieveOnFocus.isSelected() || chkVariableSubstitution.isSelected()
+        );
+    }
+
+    private void updateBufferMenuDecoration() {
+        if (isAnythingInBufferMenuChecked()) {
+            menuBuffer.setStyle("-fx-background-color: lightblue");
+        } else {
+            menuBuffer.setStyle(null); // sets default style
         }
     }
 

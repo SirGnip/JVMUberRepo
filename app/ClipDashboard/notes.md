@@ -1,11 +1,5 @@
 (personal working notes and brainstorms)
     
-# next actions
-- report exceptions as they just get dumped to stdout now
-- In clipdashboard toolbox, highlight the UI somehow (color backbround?) when I have one of the "do soemthing when app gets the focus" actions in place. could be confusing.
-Create a "store" button that is bigger, as it is used often
-
-    
 # roadmap
 
 Iteration #1 - (DONE) minimal features so I use it instead of Python one
