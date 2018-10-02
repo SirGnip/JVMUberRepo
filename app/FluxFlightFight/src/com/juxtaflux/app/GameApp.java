@@ -1,6 +1,6 @@
 package com.juxtaflux.app;
 
-/**
+/*
 Design brainstorm
  - Games have "game objects" (players, enemies, projectiles, pickups, obstacles, map, etc)
  - game objects do "internal" and "external" stuff

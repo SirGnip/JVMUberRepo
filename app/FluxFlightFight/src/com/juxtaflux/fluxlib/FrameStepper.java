@@ -5,7 +5,7 @@ import javafx.util.Duration;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-/** Step a Stepable to drive a simulation */
+/** Steps a Stepable to drive a simulation */
 /* Ideas: have a multi-window rolling timer for fps calculation?
     - time based? like 1s/5s/10s/all?
     - ticked based? like 60 frames/500 frames/100000 frames/all

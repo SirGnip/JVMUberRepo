@@ -22,11 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-// JInput JOYSTICK
-//import net.java.games.input.Controller;
-//import net.java.games.input.ControllerEnvironment;
-//import net.java.games.input.Event;
-//import net.java.games.input.EventQueue;
+import net.java.games.input.*;
 import javafx.util.Duration;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
@@ -39,6 +35,7 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.juxtaflux.fluxlib.Flx.*;
 
+/** JavaFX app that has "one-of-everything" as a demonstration of how to use each piece of functionality */
 public class KitchenSinkExample extends ExampleBase implements Stepable {
     private List<Bird> birds = new ArrayList<>();
     private ActorList actorList = new ActorList();
@@ -48,9 +45,15 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
     private Range heightRange = new Range(0, height);
     private AudioClip laserClip;
     private List<AudioClip> flapClips = new ArrayList<>();
-    private EventHandler<ActionEvent> joyHandler;
+    private EventHandler<ActionEvent> joyFlapPressHandler;
+    private EventHandler<ActionEvent> joyFlapReleaseHandler;
+    private EventHandler<ActionEvent> joyLeftPressHandler;
+    private EventHandler<ActionEvent> joyLeftReleaseHandler;
+    private EventHandler<ActionEvent> joyRightPressHandler;
+    private EventHandler<ActionEvent> joyRightReleaseHandler;
     private Pane graphRoot;
     private Random rnd = new Random();
+    private Controller joyController;
 
     private AudioClip loadAudio(String resourceName) {
         System.out.println("Loading audio from resource: " + resourceName);
@@ -209,12 +212,40 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
             inputMapper.handleMouseInput(e);
         });
 
-//        // JInput JOYSTICK
-//        joyHandler = (e -> {
-//            System.out.println("joy handler " + e.getEventType());
-//            System.out.println(e);
-//            bird1.addVel(new Vector2D(0, -vertImpulse));
-//        });
+        // JInput JOYSTICK
+        Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
+        for (int i = 0; i < controllers.length; ++i) {
+            Controller c = controllers[i];
+            System.out.printf("Controller #%d %d %s - %s\n", i, c.getPortNumber(), c.getType(), c.getName());
+            if (joyController == null && (c.getType() == Controller.Type.GAMEPAD || c.getType() == Controller.Type.STICK)) {
+                joyController = c;
+                System.out.printf("Found valid joystick. Using controller #%d %s - %s\n", i, joyController.getType().toString(), joyController.getName());
+            }
+        }
+        joyFlapPressHandler = (e -> {
+            System.out.println("joy flap press handler " + e);
+            birds.get(3).handlePressFlap();
+        });
+        joyFlapReleaseHandler = (e -> {
+            System.out.println("joy flap release handler " + e);
+            birds.get(3).handleReleaseFlap();
+        });
+        joyLeftPressHandler = (e -> {
+            System.out.println("joy left press handler " + e);
+            birds.get(3).handlePressLeft();
+        });
+        joyLeftReleaseHandler = (e -> {
+            System.out.println("joy left release handler " + e);
+            birds.get(3).handleReleaseLeft();
+        });
+        joyRightPressHandler = (e -> {
+            System.out.println("joy right press handler " + e);
+            birds.get(3).handlePressRight();
+        });
+        joyRightReleaseHandler = (e -> {
+            System.out.println("joy right release handler " + e);
+            birds.get(3).handleReleaseRight();
+        });
 
         stage.setFullScreen(false);
     }
@@ -279,27 +310,42 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
             }
         }
 
-//        // JInput JOYSTICK
-//        joyStep();
+        // JInput JOYSTICK
+        joyStep();
     }
 
-//    // JInput JOYSTICK
-//    private void joyStep() {
-//        Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
-//        int controllerIdx = 0;
-//        for (Controller cont : controllers) {
-//            cont.poll();
-//            EventQueue queue = cont.getEventQueue();
-//            Event event = new Event();
-//            while (queue.getNextEvent(event)) {
-//                if (controllerIdx == 4 && event.getComponent().getIdentifier().getName().equals("3") && event.getValue() > 0.0) {
-//                    System.out.println("firing joy handler");
-//                    joyHandler.handle(new ActionEvent());
-//                }
-//            }
-//            controllerIdx++;
-//        }
-//    }
+    // JInput JOYSTICK
+    private void joyStep() {
+        Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
+        for (Controller cont : controllers) {
+            cont.poll();
+            EventQueue queue = cont.getEventQueue();
+            Event event = new Event();
+            while (queue.getNextEvent(event)) {
+                if (cont.equals(joyController)) {
+                    if (event.getComponent().getIdentifier().getName().equals("3") && event.getValue() > 0.0) {
+                        joyFlapPressHandler.handle(new ActionEvent());
+                    } else if (event.getComponent().getIdentifier().getName().equals("3") && event.getValue() == 0.0) {
+                        joyFlapReleaseHandler.handle(new ActionEvent());
+                    } else {
+                        if (event.getComponent().getIdentifier().equals(Component.Identifier.Axis.POV )) {
+                            if (event.getValue() == Component.POV.LEFT) {
+                                joyLeftPressHandler.handle(new ActionEvent());
+                            } else if (event.getValue() == Component.POV.RIGHT) {
+                                joyRightPressHandler.handle(new ActionEvent());
+                            } else {
+                                // This probably isn't the best way to handle this. Probably would need to track state to know when to do press/release
+                                joyLeftReleaseHandler.handle(new ActionEvent());
+                                joyRightReleaseHandler.handle(new ActionEvent());
+                            }
+                        } else {
+//                            System.out.println("unhandled event: " + event.toString());
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 

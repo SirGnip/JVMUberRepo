@@ -7,19 +7,24 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-/** Helper class to reduce boiler plate for quick example apps and allows
- * multiple example apps to be opened up in sequence programmatically
-
-Goal: is to be able to quickly cycle through a bunch of test apps as a part of "manual testing"
-- reduce boilerplate code for example apps
-- allow example app to be build individually in isolation (for individual debugging, etc.)
-- allow example apps to be "composable" so that other code can:
-- open up one example app after another in sequence, blocking until each window is closed
-- open a number of windows all at once
-
+/** Helper class to reduce boiler plate for quick example apps and allows multiple example apps to be opened up in sequence programmatically
+ <p>
+Goal: is to be able to quickly cycle through a bunch of test apps as a part of "manual testing":
+<ul>
+<li> reduce boilerplate code for example apps
+<li> allow example app to be built individually in isolation (for individual debugging, etc.)
+<li> allow example apps to be "composable" so that the top-level "runner" code can either:
+    <ul>
+    <li> open up one example app after another in sequence, blocking until each window is closed
+    <li> open a number of windows all at once
+    </ul>
+ </ul>
+ <p>
 Ex:
+ <pre>{@code
     new MyWin().build().showAndWait();
     new MyWin2().build().showAndWait();
+ }</pre>
  */
 public abstract class ExampleBase extends Application {
     protected int width = 1280;
