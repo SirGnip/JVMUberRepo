@@ -2,6 +2,7 @@ package com.juxtaflux.app;
 
 import com.juxtaflux.fluxlib.Actor;
 
+/** {@link Actor} that is reaped after its lifetime elapses */
 public abstract class LifetimeActor implements Actor {
     protected double lifetime;
 

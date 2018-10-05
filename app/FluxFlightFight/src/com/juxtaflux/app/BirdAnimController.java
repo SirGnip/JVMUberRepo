@@ -4,7 +4,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 
-/** An animation-based controller for a bird */
+/** An animation-based controller for a {@link Bird} */
 public class BirdAnimController {
 
     public BirdAnimController(Bird bird) {

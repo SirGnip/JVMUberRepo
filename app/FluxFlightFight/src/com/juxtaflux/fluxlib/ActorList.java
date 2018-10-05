@@ -2,7 +2,7 @@ package com.juxtaflux.fluxlib;
 
 import java.util.ArrayList;
 
-/** Container for Actors that automatically steps and manages their lifetime */
+/** Container that automatically steps and manages the lifetime of {@link Actor}s */
 /* POTENTIAL PROBLEM: Since the ArrayList is <Actor>, if I try to pull an object out of the list to
  do something with it, I can only treat it as an Actor. I might want to make ActorList a generic so I
 can have a ActorList<Particle>, ActorList<Player>, etc. and be able to do Particle and Player type

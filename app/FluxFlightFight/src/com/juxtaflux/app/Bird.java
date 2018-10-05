@@ -20,13 +20,14 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.juxtaflux.fluxlib.Flx.*;
 
+/** Represents the main create the player and robots control in this game */
 public class Bird implements Actor {
     private String name;
     private Pane parent;
     private Color color;
     private DoubleProperty x;
     private DoubleProperty y;
-    private IntegerProperty score; // TODO: remove from Actor
+    private IntegerProperty score; // TODO: theoretically this probably should be on some kind of player object, not the Actor
     private Polygon poly;
     private Vector2D vel = new Vector2D(0, 120);
     private Vector2D gravity = new Vector2D(0, 400);

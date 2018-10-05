@@ -5,7 +5,7 @@ import javafx.scene.layout.Pane;
 
 import java.util.function.Supplier;
 
-/** An experimental class to see how functional interfaces can be used to make a very generic class */
+/** Experiment to see if a class can use functional interfaces to define an Actor's look and behavior instead of inheritance or composition */
 public class GenericLifetimeActor extends LifetimeActor {
     private Node node;
     private Pane parent;

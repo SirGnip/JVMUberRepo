@@ -7,7 +7,7 @@ import javafx.util.Duration;
 
 import java.util.function.Consumer;
 
-/** A rule-based controller that makes a bird hover in place for a period of time */
+/** A rule-based controller that makes a {@link Bird} hover in place for a period of time */
 /*
 A hover rule like this will slingshot/oscillate. Oscillation happens because with a simple rule like this
 the further away from the goal you are, the longer the time you have to correct. This means that

@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/** {@link Actor} used in {@link ActorListTest} */
 class TestActor implements Actor {
     public int stepCount = 0;
 
@@ -22,6 +23,7 @@ class TestActor implements Actor {
     }
 }
 
+/** Unit tests for {@link Actor} */
 public class ActorListTest {
     @Test
     public void smokeTestActorListStepableReapable() {

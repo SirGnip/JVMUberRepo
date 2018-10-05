@@ -56,5 +56,6 @@ Oversimplified example:
 
 
 // - In current state of code, derive two colliders, one is a simple "are they touching?" collider and the other is the "joustedHigher" collider.
+/** Placeholder class that manages collisions between {@link Actor}s */
 public class Collider {
 }

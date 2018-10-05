@@ -7,9 +7,9 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-/** Helper class to reduce boiler plate for quick example apps and allows multiple example apps to be opened up in sequence programmatically
+/** Helper class to reduce boiler plate for quick JavaFX example apps and allows multiple example apps to be opened up in sequence programmatically.
  <p>
-Goal: is to be able to quickly cycle through a bunch of test apps as a part of "manual testing":
+Goal: able to quickly create and cycle through a bunch of minimal test apps as a part of "manual testing":
 <ul>
 <li> reduce boilerplate code for example apps
 <li> allow example app to be built individually in isolation (for individual debugging, etc.)

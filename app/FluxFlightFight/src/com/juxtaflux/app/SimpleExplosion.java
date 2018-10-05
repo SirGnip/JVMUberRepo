@@ -8,6 +8,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
 import java.util.stream.IntStream;
 
+/** Return an {@link ActorList} of {@link SimpleParticle}s to represent an explosion */
 public abstract class SimpleExplosion {
     public static ActorList make(double x, double y, int count, Color color, Pane parent) {
         ActorList particles = new ActorList();

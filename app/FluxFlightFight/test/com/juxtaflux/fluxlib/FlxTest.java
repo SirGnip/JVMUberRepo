@@ -12,6 +12,7 @@ import static com.juxtaflux.fluxlib.Flx.*;
 import static org.junit.Assert.*;
 
 
+/** Unit tests for {@link Flx} */
 public class FlxTest {
     private final double DELTA = 0.0000000001;
     private final Random rnd = new Random(123);

@@ -4,6 +4,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+/** Rectangle that disappears after a set amount of time */
 public class LifetimeRect extends LifetimeActor {
     private Rectangle rect;
     private Pane parent;

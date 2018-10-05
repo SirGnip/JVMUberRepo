@@ -5,8 +5,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-/* A util to help determine what keys are part of rollover groups.
-
+/** A util app to help determine interactively what keys are part of keyboard rollover groups.
 Process: Press and hold the multiple keys you are interested in. If you hear a beep (this comes
 from the OS), that means too many keys are pressed.  Keep experimenting to find the key
 combinations that work with each other.

@@ -7,7 +7,7 @@ import javafx.util.Duration;
 
 import java.util.function.Consumer;
 
-/** A rule-based controller that makes a bird hover, fly to the side, slow down, drop */
+/** A rule-based controller that makes a {@link Bird} hover, fly to the side, slow down, drop */
 public class BirdHoverAndFlyController implements Actor {
     private Bird bird;
     private int goalHeight;

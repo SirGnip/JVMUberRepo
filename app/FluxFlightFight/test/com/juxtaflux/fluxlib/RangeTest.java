@@ -6,6 +6,7 @@ import java.util.Random;
 
 import static org.junit.Assert.*;
 
+/** Unit tests for {@link Range} */
 public class RangeTest {
     private final double DELTA = 0.0000000001;
 

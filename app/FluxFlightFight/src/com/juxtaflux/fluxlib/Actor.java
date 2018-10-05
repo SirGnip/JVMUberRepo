@@ -91,5 +91,5 @@ Use cases to throw at my design
 - problem I can delay: Impl of each Actor class can determine what it is parented to. But, if I want to change and be able to parent my actors to a type other than Pane, I will need to change impl of all my Actor classes.
     - Decision: do simple implementation and wait for a compelling use case to switch a generic type
 */
-public interface Actor extends Stepable, Reapable  {
+public interface Actor extends Stepable, Reapable {
 }

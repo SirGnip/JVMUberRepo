@@ -11,7 +11,7 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/** A naive, direct input mapper that maps each key-down event into an explicit impulse */
+/** A naive, direct input mapper that maps each key-down event into an explicit impulse (see {@link TraditionalInputMapper} for a more robust mapping) */
 public class NaiveInputMapper implements InputMapper {
     private KitchenSinkExample game; // backpointer couples this class to main game class, but at last we have at least extracted input logic into this mapper.
     private Map<KeyCode, Runnable> keymap = new HashMap<>();

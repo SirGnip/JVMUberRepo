@@ -71,7 +71,7 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         graphRoot.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 //        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
 //        String appConfigPath = rootPath + "/resources/flux.properties";
-//        System.out.println("prpoerties path: " + appConfigPath);
+//        System.out.println("properties path: " + appConfigPath);
 
 //        URL propUrl = getClass().getResource("/resources/flux.properties");
 

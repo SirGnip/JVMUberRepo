@@ -13,7 +13,7 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/** A more traditional input schema that treats impulse as relative to the Birds current direction */
+/** A more traditional input schema that treats impulse as relative to the {@link }Bird}s current direction */
 public class TraditionalInputMapper implements InputMapper {
     KitchenSinkExample game; // backpointer couples this class to main game class, but at last we have at least extracted input logic into this mapper.
     private Map<KeyCode, Runnable> keyPressMap = new HashMap<>();

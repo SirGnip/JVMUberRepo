@@ -33,7 +33,9 @@ Ranges are immutable. have methods like "include" or "extends" return a new Rang
 
 Have the "generate random number in range" be a method? an external util?
 */
-/** Represents a numeric range (lo is inclusive, hi is exclusive, though I don't know how rigorously I can enforce this with the imprecision of doubles)*/
+/** Represents a numeric range (lo is inclusive, hi is exclusive).
+ * though I don't know how rigorously I can enforce this with the imprecision of doubles)
+*/
 public class Range {
     public class RangeCreationException extends RuntimeException {
         public RangeCreationException(String message) {

@@ -10,6 +10,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+/** Sample particle with color, size, lifetime */
 public class SimpleParticle extends LifetimeActor {
     private Circle circle;
     private Pane parent;

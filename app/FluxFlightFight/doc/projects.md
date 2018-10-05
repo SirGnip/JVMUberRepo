@@ -18,7 +18,7 @@ Sequence:
     - idea of how to track state: https://stackoverflow.com/a/13017419
         - though, i could do a big array like this, or i could just track the state im interested in for each object
     - x have visual to reflect direction of bird?
-    - x can i have that may keys pressed at the same time (4 players, each player will be holding a direction key down)
+    - x can i have that many keys pressed at the same time (4 players, each player will be holding a direction key down)
     - one part of this will be determining state of keys (is it down?) which means I'll have to deal with key-repeat.
         - it appears that a keyboard is split into zones. a max number of keys *in a certain zone* can be held down at once. I'll probably need to choose keys that span zones.
         - in a text editor, press three keys next to each other at the same time. if they are in the same zone, you will hear a "beep" and see no characters typed. Keep hitting these three keys
@@ -41,6 +41,7 @@ Sequence:
 - transitions between flying and running
 - physics of player responding to obstacles (wrap around screen? bounce off of wall? bounce off platform? walk vs fly?)
 - "shell" (title screen, title screen, initial question, gameplay, round end)
+    - do this in groovy somehow?
 - bonus: things that are just a bit more "polish" that might be nice:
     - x keyboard w/ no repeat
     - fullscreen and try on TV
