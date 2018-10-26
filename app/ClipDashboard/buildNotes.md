@@ -22,4 +22,3 @@ How to take git clone and build/install it
 - Build->Build Artifacts...->Build
 - cd <proj dir>/scripts/
 - ./makeInstallDir.sh (follow directions to install)
-

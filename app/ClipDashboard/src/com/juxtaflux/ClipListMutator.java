@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-/** for lambdas that mutate a List<String> in place */
+/** for lambdas that mutate a {@code List<String>} in place */
 @FunctionalInterface
 interface ListTransformer {
     void transform(List<String> list);
