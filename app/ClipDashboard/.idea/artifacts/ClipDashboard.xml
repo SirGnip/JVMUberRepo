@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ClipDashboard">
+    <output-path>$PROJECT_DIR$/out/artifacts/ClipDashboard</output-path>
+    <root id="archive" name="ClipDashboard.jar">
+      <element id="module-output" name="ClipDashboard" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../3p/commons-lang/3.5/commons-lang3-3.5.jar" path-in-jar="/" />
+      <element id="module-output" name="JavaFXUtils" />
+    </root>
+  </artifact>
+</component>

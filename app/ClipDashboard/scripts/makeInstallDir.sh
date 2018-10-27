@@ -6,7 +6,7 @@ OUT_DIR=../out/ClipDashboard
 
 rm -rf $OUT_DIR
 mkdir -p $OUT_DIR
-cp ../out/artifacts/ClipDashboard/Clipdashboard.jar $OUT_DIR
+cp ../out/artifacts/ClipDashboard/ClipDashboard.jar $OUT_DIR
 cp ../src/ClipDashboardIcon.ico $OUT_DIR
 cp generateShortcut*.vbs $OUT_DIR
 cp launchApp.bat $OUT_DIR

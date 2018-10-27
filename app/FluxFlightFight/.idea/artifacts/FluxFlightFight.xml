@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="FluxFlightFight">
+    <output-path>$PROJECT_DIR$/out/artifacts/FluxFlightFight</output-path>
+    <root id="archive" name="FluxFlightFight.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="FluxFlightFight" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../3p/commons-math/3.3/commons-math3-3.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../3p/commons-math/3.3/commons-math3-3.3-javadoc.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../3p/guava/23.0/guava-23.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../3p/JInput/Jenkins-2841/dist/jinput.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

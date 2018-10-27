@@ -5,6 +5,5 @@ app/FluxFlightFightBAK/
 lib/JavaFXUtils/0.2/
 
 # IntelliJ
-.idea/
-*.iml
-src/META-INF
+.idea/.workspace.xml
+.idea/.tasks.xml
