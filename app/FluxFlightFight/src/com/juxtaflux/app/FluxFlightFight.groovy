@@ -177,8 +177,10 @@ class FluxFlightFight  extends ExampleBase implements Stepable {
             pulse.setAutoReverse(true)
 
             graphRoot.getChildren().add(score)
+            def currentBird = bird // I originally used just "bird" in the closure, but see: http://blog.freeside.co/2013/03/29/groovy-gotcha-for-loops-and-closure-scope/
+
             bird.scoreProperty().addListener({ obs, old, cur ->
-                score.setText(bird.getName() + ": " + cur)
+                score.setText(currentBird.getName() + ": " + cur)
                 pulse.jumpTo(Duration.ZERO) // This seems to keep scale in a good state when multiple animations are triggered and overlap
                 pulse.play()
             } as ChangeListener)
