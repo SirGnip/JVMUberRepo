@@ -6,7 +6,6 @@ import com.juxtaflux.experiments.TraditionalInputMapperFFF
 import com.juxtaflux.fluxlib.ActorList
 import com.juxtaflux.fluxlib.Flx
 import com.juxtaflux.fluxlib.FrameStepper
-import com.juxtaflux.fluxlib.Range
 import com.juxtaflux.fluxlib.Stepable
 import javafx.animation.ScaleTransition
 import javafx.beans.value.ChangeListener
@@ -15,10 +14,7 @@ import javafx.event.EventHandler
 import javafx.geometry.BoundingBox
 import javafx.geometry.Bounds
 import javafx.geometry.Insets
-import javafx.scene.Node
-import javafx.scene.control.Button
 import javafx.scene.control.Label
-import javafx.scene.image.ImageView
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.Background
 import javafx.scene.layout.BackgroundFill
@@ -26,7 +22,6 @@ import javafx.scene.layout.CornerRadii
 import javafx.scene.layout.Pane
 import javafx.scene.media.AudioClip
 import javafx.scene.paint.Color
-import javafx.scene.shape.Rectangle
 import javafx.scene.text.Font
 import javafx.stage.Stage
 import javafx.util.Duration
@@ -36,9 +31,6 @@ import net.java.games.input.ControllerEnvironment
 import net.java.games.input.Event
 import net.java.games.input.EventQueue
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D
-
-import java.util.function.Supplier
-import java.util.stream.Collectors
 
 import static com.google.common.base.Preconditions.checkNotNull
 import static com.juxtaflux.fluxlib.Flx.alphaize
@@ -50,8 +42,6 @@ class FluxFlightFight  extends ExampleBase implements Stepable {
     private ActorList actorList = new ActorList()
     private FrameStepper stepper
     private BoundingBox edges = new BoundingBox(50, 50, width-50, height-50)
-    private Range widthRange = new Range(0, width)
-    private Range heightRange = new Range(0, height)
     private AudioClip laserClip
     private List<AudioClip> flapClips = new ArrayList<>()
     private EventHandler<ActionEvent> joyFlapPressHandler
@@ -72,51 +62,12 @@ class FluxFlightFight  extends ExampleBase implements Stepable {
         return new AudioClip(url.toString())
     }
 
-    public List<Bird> getBirds() { return birds }
+    List<Bird> getBirds() { return birds }
 
     @Override
     protected void buildRoot(Stage stage, Pane pane) {
         graphRoot = pane
         graphRoot.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)))
-//        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath()
-//        String appConfigPath = rootPath + "/resources/flux.properties"
-//        System.out.println("properties path: " + appConfigPath)
-
-//        URL propUrl = getClass().getResource("/resources/flux.properties")
-
-        // read from .properties file
-        InputStream ins = getClass().getResourceAsStream("/resources/flux.properties")
-        Properties props = new Properties()
-        try {
-            props.load(ins)
-            in.close()
-            System.out.println(props)
-            String stuff = props.getProperty("stuff")
-            System.out.println("STUFF read from flie: " + stuff)
-        } catch (Exception ex) {
-            System.out.println("ERROR " + ex)
-        }
-
-        // read text file from .jar
-        InputStream in2 = getClass().getResourceAsStream("/resources/blah.txt")
-        System.out.println("input stream: " + in2)
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in2))
-        System.out.println("reader: " + reader)
-//        String txt = reader.lines().collect(Collectors.joining("\n"))
-//        System.out.println(txt)
-        List<String> txt = reader.lines().collect(Collectors.toList())
-        txt.each { System.out.println(it) }
-
-        // set up image
-        URL imgUrl = getClass().getResource("/resources/img/cloud.png")
-        System.out.println("Loading image from URL: " + imgUrl)
-        checkNotNull(imgUrl)
-        ImageView img = new ImageView(imgUrl.toString())
-        img.setPreserveRatio(true)
-        img.setTranslateX(300)
-        img.setTranslateY(250)
-        img.setOpacity(0.15)
-        graphRoot.getChildren().add(img)
 
         // set up sound
         laserClip = loadAudio("/resources/audio/laser.wav")
@@ -124,32 +75,8 @@ class FluxFlightFight  extends ExampleBase implements Stepable {
         flapClips.add(loadAudio("/resources/audio/flap2.wav"))
         flapClips.add(loadAudio("/resources/audio/flap3.wav"))
 
-        // button
-        Button btn = new Button("Click ME")
-        btn.setTranslateX(100)
-        btn.setTranslateY(100)
-
-        Supplier<Node> s1 = {
-            Vector2D pt = Flx.rnd(rnd, edges)
-            Rectangle r = new Rectangle(pt.getX(), pt.getY(), 30, 30)
-            r.setFill(Color.GREEN)
-            return r
-        }
-        Supplier<Node> s2 = { Flx.makeCross((int)widthRange.rand(rnd), (int)heightRange.rand(rnd), 40, Color.GREENYELLOW) }
-        Supplier<Node> s3 = { Flx.makeGrid((int)widthRange.rand(rnd), (int)heightRange.rand(rnd), 50, 50, 20, Color.LIGHTBLUE) }
-        List<Supplier<Node>> suppliers = Arrays.asList(s1, s2, s3)
-
-        btn.setOnAction {
-            System.out.println("click")
-            laserClip.play()
-            actorList.actors.add(new GenericLifetimeActor(10, graphRoot, Flx.rndChoice(suppliers, rnd)))
-        }
-        graphRoot.getChildren().add(btn)
-
-        int goalLevel = 500
-        graphRoot.getChildren().add(Flx.makeLine(0, goalLevel, 800, goalLevel, Color.GRAY))
-
         // birds
+        int goalLevel = 500
         int initialScore = 0
         double startX = 100
         birds.add(new Bird(startX, goalLevel,"Blue", alphaize(Color.BLUE), graphRoot, initialScore))
@@ -178,7 +105,6 @@ class FluxFlightFight  extends ExampleBase implements Stepable {
 
             graphRoot.getChildren().add(score)
             def currentBird = bird // I originally used just "bird" in the closure, but see: http://blog.freeside.co/2013/03/29/groovy-gotcha-for-loops-and-closure-scope/
-
             bird.scoreProperty().addListener({ obs, old, cur ->
                 score.setText(currentBird.getName() + ": " + cur)
                 pulse.jumpTo(Duration.ZERO) // This seems to keep scale in a good state when multiple animations are triggered and overlap
@@ -216,7 +142,6 @@ class FluxFlightFight  extends ExampleBase implements Stepable {
 
         // Mouse
         stage.getScene().setOnMousePressed {e ->
-//            System.out.println(e.isPrimaryButtonDown() + "/" + e.isSecondaryButtonDown() + " " + e)
             inputMapper.handleMouseInput(e)
         }
         stage.getScene().setOnMouseReleased {e ->
@@ -281,7 +206,7 @@ class FluxFlightFight  extends ExampleBase implements Stepable {
     }
 
     @Override
-    public void step(double delta) {
+    void step(double delta) {
         checkNotNull(actorList)
         birds.each {bird ->
             checkNotNull(bird)
@@ -294,7 +219,6 @@ class FluxFlightFight  extends ExampleBase implements Stepable {
         birds.each {bird ->
             if (!edges.contains(bird.getBounds())) {
                 bird.handleEdges(edges)
-//                bird.wrapAtEdge(edges)
             }
         }
 
