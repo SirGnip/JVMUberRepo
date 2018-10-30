@@ -152,7 +152,7 @@ public class Bird implements Actor {
         }
     }
 
-    // Traditional input interface
+    // Input: Button presses
     public void handlePressRight() {
         rightPressed = true;
         calcDirection();
@@ -185,6 +185,17 @@ public class Bird implements Actor {
     }
     public void handleReleaseFlap() {
         isFlapDown = false;
+    }
+    // Input: POV
+    public void handleDirectionRight() {
+        handlePressRight();
+    }
+    public void handleDirectionLeft() {
+        handlePressLeft();
+    }
+    public void handleDirectionRelease() {
+        handleReleaseRight();
+        handleReleaseLeft();
     }
 
     public Bounds getBounds() {
