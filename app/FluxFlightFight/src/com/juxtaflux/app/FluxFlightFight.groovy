@@ -43,8 +43,82 @@ class FluxFlightFight extends ExampleBase implements Stepable {
     private List<AudioClip> flapClips = new ArrayList<>()
     private Pane graphRoot
     private Random rnd = new Random()
-    private Controller joyController
+    private final int GOAL_LEVEL = 500
+    private final int INITIAL_SCORE = 0
     private def inputMap = [:]
+    private def playerList = [
+            ["Red", Color.RED],
+            ["Blue", Color.BLUE],
+            ["Yellow", Color.YELLOW],
+            ["Green", Color.GREEN],
+            ["Purple", Color.PURPLE],
+            ["Pink", Color.PINK],
+            ["Orange", Color.ORANGE],
+            ["White", Color.WHITE],
+            ["Brown", Color.BROWN],
+            ["Gray", Color.DARKGRAY],
+    ]
+
+    private Map keyboardInputMaps = [
+            (KeyCode.A): [
+                [KeyEvent.KEY_PRESSED, KeyCode.DIGIT1, {bird -> bird.handlePressLeft()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.DIGIT1, {bird -> bird.handleReleaseLeft()}],
+                [KeyEvent.KEY_PRESSED, KeyCode.Q, {bird -> bird.handlePressRight()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.Q, {bird -> bird.handleReleaseRight()}],
+                [KeyEvent.KEY_PRESSED, KeyCode.A, {bird -> doBirdSound(bird); bird.handlePressFlap()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.A, {bird -> bird.handleReleaseFlap()}]
+            ],
+            (KeyCode.C): [
+                [KeyEvent.KEY_PRESSED, KeyCode.Z, {bird -> bird.handlePressLeft()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.Z, {bird -> bird.handleReleaseLeft()}],
+                [KeyEvent.KEY_PRESSED, KeyCode.X, {bird -> bird.handlePressRight()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.X, {bird -> bird.handleReleaseRight()}],
+                [KeyEvent.KEY_PRESSED, KeyCode.C, {bird -> doBirdSound(bird); bird.handlePressFlap()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.C, {bird -> bird.handleReleaseFlap()}]
+            ],
+            (KeyCode.COMMA): [
+                [KeyEvent.KEY_PRESSED, KeyCode.N, {bird -> bird.handlePressLeft()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.N, {bird -> bird.handleReleaseLeft()}],
+                [KeyEvent.KEY_PRESSED, KeyCode.M, {bird -> bird.handlePressRight()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.M, {bird -> bird.handleReleaseRight()}],
+                [KeyEvent.KEY_PRESSED, KeyCode.COMMA, {bird -> doBirdSound(bird); bird.handlePressFlap()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.COMMA, {bird -> bird.handleReleaseFlap()}]
+            ],
+            (KeyCode.RIGHT): [
+                [KeyEvent.KEY_PRESSED, KeyCode.LEFT, {bird -> bird.handlePressLeft()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.LEFT, {bird -> bird.handleReleaseLeft()}],
+                [KeyEvent.KEY_PRESSED, KeyCode.DOWN, {bird -> bird.handlePressRight()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.DOWN, {bird -> bird.handleReleaseRight()}],
+                [KeyEvent.KEY_PRESSED, KeyCode.RIGHT, {bird -> doBirdSound(bird); bird.handlePressFlap()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.RIGHT, {bird -> bird.handleReleaseFlap()}]
+            ],
+            (KeyCode.BACK_SPACE): [
+                [KeyEvent.KEY_PRESSED, KeyCode.ENTER, {bird -> bird.handlePressLeft()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.ENTER, {bird -> bird.handleReleaseLeft()}],
+                [KeyEvent.KEY_PRESSED, KeyCode.BACK_SLASH, {bird -> bird.handlePressRight()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.BACK_SLASH, {bird -> bird.handleReleaseRight()}],
+                [KeyEvent.KEY_PRESSED, KeyCode.BACK_SPACE, {bird -> doBirdSound(bird); bird.handlePressFlap()}],
+                [KeyEvent.KEY_RELEASED, KeyCode.BACK_SPACE, {bird -> bird.handleReleaseFlap()}]
+            ],
+    ]
+
+    private Map gamepadInputMaps = [
+            ([Controller.Type.GAMEPAD, 'Controller (ZD Game For Windows)', Component.Identifier.Button._0]): [
+                [Component.Identifier.Button._0, 1.0 as Float, {bird -> doBirdSound(bird); bird.handlePressFlap()}],
+                [Component.Identifier.Button._0, 0.0 as Float, {bird -> bird.handleReleaseFlap()}],
+                [Component.Identifier.Axis.POV, Component.POV.LEFT as Float, {bird -> bird.handleDirectionLeft()}],
+                [Component.Identifier.Axis.POV, Component.POV.RIGHT as Float, {bird -> bird.handleDirectionRight()}],
+                [Component.Identifier.Axis.POV, Component.POV.CENTER as Float, {bird -> bird.handleDirectionRelease()}]
+            ],
+            ([Controller.Type.STICK, 'TigerGame PS/PS2 Game Controller Adapter', Component.Identifier.Button._2]): [
+                [Component.Identifier.Button._2, 1.0 as Float, {bird -> doBirdSound(bird); bird.handlePressFlap()}],
+                [Component.Identifier.Button._2, 0.0 as Float, {bird -> bird.handleReleaseFlap()}],
+                [Component.Identifier.Button._15, 1.0 as Float, {bird -> bird.handleDirectionLeft()}],
+                [Component.Identifier.Button._15, 0.0 as Float, {bird -> bird.handleDirectionRelease()}],
+                [Component.Identifier.Button._13, 1.0 as Float, {bird -> bird.handleDirectionRight()}],
+                [Component.Identifier.Button._13, 0.0 as Float, {bird -> bird.handleDirectionRelease()}],
+            ]
+    ]
 
     private AudioClip loadAudio(String resourceName) {
         System.out.println("Loading audio from resource: " + resourceName)
@@ -67,23 +141,11 @@ class FluxFlightFight extends ExampleBase implements Stepable {
         flapClips.add(loadAudio("/resources/audio/flap2.wav"))
         flapClips.add(loadAudio("/resources/audio/flap3.wav"))
 
-        // birds
-        int goalLevel = 500
-        int initialScore = 0
-        double startX = 100
-        birds.add(new Bird(startX, goalLevel,"Blue", alphaize(Color.BLUE), graphRoot, initialScore))
-        startX += 100
-        birds.add(new Bird(startX, goalLevel,"Red", alphaize(Color.RED), graphRoot, initialScore))
-        startX += 100
-        birds.add(new Bird(startX, goalLevel,"Green", alphaize(Color.GREEN), graphRoot, initialScore))
-        startX += 100
-        birds.add(new Bird(startX, goalLevel,"Yellow", alphaize(Color.YELLOW), graphRoot, initialScore))
-
         // scoreboard
         int scoreX = 50
         Font scoreFont = new Font(30)
         for (Bird bird: birds) {
-            Label score = new Label(bird.getName() + ": " + initialScore)
+            Label score = new Label(bird.getName() + ": " + INITIAL_SCORE)
             score.setTextFill(bird.getColor())
             score.setFont(scoreFont)
             score.setTranslateX(scoreX += 170)
@@ -104,47 +166,38 @@ class FluxFlightFight extends ExampleBase implements Stepable {
             } as ChangeListener)
         }
 
-        // Controller
+        // Auto-Controllers
 //        new BirdAnimController(birds.get(0))
 //        BirdHoverRuleController bController1 = new BirdHoverRuleController(birds.get(1), 250, 10, 4)
 //        actorList.actors.add(bController1)
-//        BirdHoverAndFlyController bController2 = new BirdHoverAndFlyController(birds.get(2), goalLevel, 5, 3, 1)
-//        actorList.actors.add(bController2)
+        def robotBird = new Bird(500, GOAL_LEVEL, "ROBOT", alphaize(Color.DARKGRAY.darker().darker()), graphRoot, 0)
+        birds.add(robotBird)
+        BirdHoverAndFlyController bController2 = new BirdHoverAndFlyController(robotBird, GOAL_LEVEL, 5, 3, 1)
+        actorList.actors.add(bController2)
 
         // FrameStepper
         stepper = new FrameStepper(this).register()
-
-        inputMap[[KeyEvent.KEY_PRESSED, KeyCode.E]] = {birds[0].handlePressLeft()}
-        inputMap[[KeyEvent.KEY_RELEASED, KeyCode.E]] = {birds[0].handleReleaseLeft()}
-        inputMap[[KeyEvent.KEY_PRESSED, KeyCode.R]] = {birds[0].handlePressRight()}
-        inputMap[[KeyEvent.KEY_RELEASED, KeyCode.R]] = {birds[0].handleReleaseRight()}
-        inputMap[[KeyEvent.KEY_PRESSED, KeyCode.T]] = {doBirdSound(birds[0]); birds[0].handlePressFlap()}
-        inputMap[[KeyEvent.KEY_RELEASED, KeyCode.T]] = {birds[0].handleReleaseFlap()}
-
-        def controller = ControllerEnvironment.getDefaultEnvironment().getControllers()[4]
-        inputMap[[1.0 as Float, controller, Component.Identifier.Button._0]] = {doBirdSound(birds[1]); birds[1].handlePressFlap()}
-        inputMap[[0.0 as Float, controller, Component.Identifier.Button._0]] = {birds[1].handleReleaseFlap()}
-        inputMap[[Component.POV.LEFT as Float, controller, Component.Identifier.Axis.POV]] = {birds[1].handleDirectionLeft()}
-        inputMap[[Component.POV.RIGHT as Float, controller, Component.Identifier.Axis.POV]] = {birds[1].handleDirectionRight()}
-        inputMap[[Component.POV.CENTER as Float, controller, Component.Identifier.Axis.POV]] = {birds[1].handleDirectionRelease()}
-
-        inputMap[[KeyEvent.KEY_PRESSED, KeyCode.SEMICOLON]] = {birds[3].handlePressLeft()}
-        inputMap[[KeyEvent.KEY_RELEASED, KeyCode.SEMICOLON]] = {birds[3].handleReleaseLeft()}
-        inputMap[[KeyEvent.KEY_PRESSED, KeyCode.QUOTE]] = {birds[3].handlePressRight()}
-        inputMap[[KeyEvent.KEY_RELEASED, KeyCode.QUOTE]] = {birds[3].handleReleaseRight()}
-        inputMap[[KeyEvent.KEY_PRESSED, KeyCode.ENTER]] = {doBirdSound(birds[3]); birds[3].handlePressFlap()}
-        inputMap[[KeyEvent.KEY_RELEASED, KeyCode.ENTER]] = {birds[3].handleReleaseFlap()}
 
         // Keyboard
         stage.getScene().setOnKeyPressed {e ->
             if (e.getCode().equals(KeyCode.ESCAPE)) {
                 close()
-            } else if (e.getCode().equals(KeyCode.DIGIT1)) {
-                birds.each {bird ->
-                        actorList.actors.add(SimpleExplosion.make(bird.getX(), bird.getY(), 100, alphaize(bird.getColor()), graphRoot))}
+            } else if (e.getCode().equals(KeyCode.DIGIT5)) {
+                birds.each { bird ->
+                    actorList.actors.add(SimpleExplosion.make(bird.getX(), bird.getY(), 100, alphaize(bird.getColor()), graphRoot))
+                }
+            } else if (e.getCode() == KeyCode.DIGIT6) {
+                println "actorList: $actorList.actors.size"
+            } else if ([KeyEvent.KEY_PRESSED, e.getCode()] in inputMap) {
+                inputMap[[KeyEvent.KEY_PRESSED, e.getCode()]].run()
             } else {
-                if ([KeyEvent.KEY_PRESSED, e.getCode()] in inputMap) {
-                    inputMap[[KeyEvent.KEY_PRESSED, e.getCode()]].run()
+                println "handling unknown input $e"
+                List keyboardMap = keyboardInputMaps[e.getCode()]
+                if (keyboardMap != null) {
+                    println "Adding keyboard map $keyboardMap"
+                    addNextPlayerWithKeyboard(keyboardMap)
+                } else {
+                    println "No known kayboard map for ${e.getCode()}"
                 }
             }
         }
@@ -155,18 +208,45 @@ class FluxFlightFight extends ExampleBase implements Stepable {
             }
         }
 
-        // JInput JOYSTICK
-        Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers()
-        for (int i = 0; i < controllers.length; ++i) {
-            Controller c = controllers[i]
-            System.out.printf("Controller #%d %d %s - %s\n", i, c.getPortNumber(), c.getType(), c.getName())
-            if (joyController == null && (c.getType() == Controller.Type.GAMEPAD || c.getType() == Controller.Type.STICK)) {
-                joyController = c
-                System.out.printf("Found valid joystick. Using controller #%d %s - %s\n", i, joyController.getType().toString(), joyController.getName())
-            }
-        }
-
         stage.setFullScreen(false)
+    }
+
+    void addNextPlayerWithKeyboard(List keyboardMap) {
+        // add object, hook up input, add scoreboard
+        def (name, color) = playerList.removeAt(0)
+        def newBird = new Bird(500, GOAL_LEVEL, name, alphaize(color), graphRoot, 0)
+        birds.add(newBird)
+        assignKeyboardInput(newBird, keyboardMap)
+    }
+
+    void addNextPlayerWithGamepad(Controller controller, List gamepadMap) {
+        def (name, color) = playerList.removeAt(0)
+        def newBird = new Bird(500, GOAL_LEVEL, name, alphaize(color), graphRoot, 0)
+        birds.add(newBird)
+        assignGamepadInput(newBird, controller, gamepadMap)
+    }
+
+    /** Assign specific keyboardMap to player */
+    void assignKeyboardInput(Bird bird, List keyboardMap) {
+        for (row in keyboardMap) {
+            println "Adding keyboard input $row"
+            def newRow = row.clone() // create clone to mutate
+            def closure = newRow.pop()
+            def wrappedClosure = { closure(bird) }
+            inputMap[newRow] = wrappedClosure
+        }
+    }
+
+    /** Assign specific gamepadMap to player */
+    void assignGamepadInput(Bird bird, Controller controller, List gamepadMap) {
+        for (List row in gamepadMap) {
+            def newRow = row.clone() // create clone to mutate
+            def closure = newRow.pop()
+            def wrappedClosure = { closure(bird) }
+            newRow.add(0, controller)
+            println "Adding gamepad input $newRow"
+            inputMap[newRow] = wrappedClosure
+        }
     }
 
     void doBirdSound(Bird bird) {
@@ -202,7 +282,7 @@ class FluxFlightFight extends ExampleBase implements Stepable {
         }
 
         for (int a = 0; a < birds.size(); ++a) {
-            for (int b = a + 1; b < 4; ++b) {
+            for (int b = a + 1; b < birds.size(); ++b) {
                 Bird bird1 = birds.get(a)
                 Bounds bounds1 = bird1.getBounds()
                 Bird bird2 = birds.get(b)
@@ -229,19 +309,26 @@ class FluxFlightFight extends ExampleBase implements Stepable {
         joyStep()
     }
 
-    // JInput JOYSTICK
+    // JInput GAMEPAD
     private void joyStep() {
         Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers()
         for (Controller cont : controllers) {
-            if (cont.getType() != Controller.Type.GAMEPAD) {
+            if (! (cont.getType() in [Controller.Type.GAMEPAD, Controller.Type.STICK])) {
                 continue
             }
             cont.poll()
             EventQueue queue = cont.getEventQueue()
             Event event = new Event()
             while (queue.getNextEvent(event)) {
-                if ([event.getValue(), cont, event.getComponent().getIdentifier()] in inputMap) {
-                    inputMap[[event.getValue(), cont, event.getComponent().getIdentifier()]].run()
+                if (event.getComponent().analog) { continue }
+                if ([cont, event.getComponent().getIdentifier(), event.getValue()] in inputMap) {
+                    inputMap[[cont, event.getComponent().getIdentifier(), event.getValue()]].run()
+                } else {
+                    def key = [cont.getType(), cont.getName(), event.getComponent().getIdentifier()]
+                    if (key in gamepadInputMaps) {
+                        println "adding new player from gamepad from event: $event"
+                        addNextPlayerWithGamepad(cont, gamepadInputMaps[key])
+                    }
                 }
             }
         }
