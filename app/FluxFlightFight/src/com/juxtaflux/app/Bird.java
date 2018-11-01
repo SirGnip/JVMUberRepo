@@ -234,8 +234,9 @@ public class Bird implements Actor {
     }
 
     public void doDie() {
-        List<Double> startingX = Arrays.asList(100.0, 300.0, 500.0);
+        List<Double> startingX = Arrays.asList(50.0, 250.0, 450.0, 650.0, 850.0, 1050.0);
         x.setValue(Flx.rndChoice(startingX));
-        y.setValue(500);
+        y.setValue(650);
+        vel = new Vector2D(0, 0);
     }
 }
