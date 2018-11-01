@@ -48,7 +48,7 @@ class FluxFlightFight extends ExampleBase implements Stepable {
     private List<Bird> birds = new ArrayList<>()
     private ActorList actorList = new ActorList()
     private FrameStepper stepper
-    private BoundingBox edges = new BoundingBox(50, 50, width-50, height-50)
+    private BoundingBox edges = new BoundingBox(0, 50, width, height-50)
     private AudioClip laserClip
     private List<AudioClip> flapClips = new ArrayList<>()
     private Pane graphRoot

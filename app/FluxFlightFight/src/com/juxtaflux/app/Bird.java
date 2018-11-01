@@ -22,6 +22,7 @@ import static com.juxtaflux.fluxlib.Flx.*;
 
 /** Represents the main create the player and robots control in this game */
 public class Bird implements Actor {
+    private final double size = 40.0; //
     private String name;
     private Pane parent;
     private Color color;
@@ -97,12 +98,13 @@ public class Bird implements Actor {
 
     // block bird from leaving top or bottom, wrap on left and right sides
     public void handleEdges(Bounds edges) {
+        final double halfWidth = (size/2) + 10; // half of the width of bird plus some slush
         double slushAmount = 1;
         Vector2D offset = escapingBy(getBounds(), edges, slushAmount);
         if (offset.getX() < 0.0) {
-            x.setValue(80);
+            x.setValue(halfWidth);
         } else if (offset.getX() > 0.0) {
-            x.setValue(edges.getMaxX() - 80);
+            x.setValue(edges.getMaxX() - halfWidth);
         }
         if (offset.getY() != 0.0) {
             y.setValue(y.get() + offset.getY());
@@ -204,8 +206,8 @@ public class Bird implements Actor {
 
     private Node makeGraphRoot() {
         poly = new Polygon();
-        double s = 20.0;
-        double s2 = 25.0;
+        double s = size / 2;
+        double s2 = (size / 2) + 5;
         double s3 = 5.0;
         poly.getPoints().addAll(new Double[]{
                 0.0, s, // bottom
