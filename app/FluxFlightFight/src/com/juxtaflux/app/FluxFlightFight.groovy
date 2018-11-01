@@ -5,13 +5,18 @@ import com.juxtaflux.fluxlib.ActorList
 import com.juxtaflux.fluxlib.Flx
 import com.juxtaflux.fluxlib.FrameStepper
 import com.juxtaflux.fluxlib.Stepable
+import com.juxtaflux.gfluxlib.Rect2D
 import javafx.animation.ScaleTransition
 import javafx.beans.value.ChangeListener
 import javafx.geometry.BoundingBox
 import javafx.geometry.Bounds
 import javafx.geometry.Insets
+import javafx.geometry.Rectangle2D
+import javafx.scene.Cursor
+import javafx.scene.Parent
 import javafx.scene.control.Label
 import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyCombination
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.Background
 import javafx.scene.layout.BackgroundFill
@@ -21,6 +26,9 @@ import javafx.scene.media.AudioClip
 import javafx.scene.paint.Color
 import javafx.scene.shape.Rectangle
 import javafx.scene.text.Font
+import javafx.scene.transform.Scale
+import javafx.scene.transform.Translate
+import javafx.stage.Screen
 import javafx.stage.Stage
 import javafx.util.Duration
 import net.java.games.input.Component
@@ -36,6 +44,7 @@ import static com.juxtaflux.fluxlib.Flx.boundsMid
 import static com.juxtaflux.fluxlib.Flx.rndChoice
 
 class FluxFlightFight extends ExampleBase implements Stepable {
+    private final Boolean FULLSCREEN = true
     private List<Bird> birds = new ArrayList<>()
     private ActorList actorList = new ActorList()
     private FrameStepper stepper
@@ -134,10 +143,27 @@ class FluxFlightFight extends ExampleBase implements Stepable {
 
     List<Bird> getBirds() { return birds }
 
+    private void enableFullscreen(Stage stage, Parent root) {
+        stage.setFullScreen(true)
+        stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH)
+        root.setClip(new Rectangle(0, 0, width, height))
+        def screenRect = Screen.getPrimary().getBounds()
+        def (scaleRatio, letterboxOffset) = Rect2D.letterboxIn(new Rectangle2D(0, 0, width, height), screenRect)
+        println "Fullscreen scaling of ${width}x${height} to $screenRect with ratio=$scaleRatio and offset=$letterboxOffset"
+        root.getTransforms().add(new Translate(letterboxOffset.getX(), letterboxOffset.getY()))
+        root.getTransforms().add(new Scale(scaleRatio, scaleRatio))
+        stage.getScene().setCursor(Cursor.NONE)
+    }
+
     @Override
     protected void buildRoot(Stage stage, Pane pane) {
         graphRoot = pane
         graphRoot.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)))
+
+        // Fullscreen
+        if (FULLSCREEN) {
+            enableFullscreen(stage, pane)
+        }
 
         // playfield border
         def border = new Rectangle(0, height-edges.getHeight(), width, edges.getHeight())
@@ -193,8 +219,6 @@ class FluxFlightFight extends ExampleBase implements Stepable {
                 inputMap[[KeyEvent.KEY_RELEASED, e.getCode()]].run()
             }
         }
-
-        stage.setFullScreen(false)
     }
 
     void addNextPlayerWithKeyboard(List keyboardMap) {
