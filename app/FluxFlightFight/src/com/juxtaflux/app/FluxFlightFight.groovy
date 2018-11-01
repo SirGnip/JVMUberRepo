@@ -45,6 +45,9 @@ class FluxFlightFight extends ExampleBase implements Stepable {
     private Random rnd = new Random()
     private final int GOAL_LEVEL = 500
     private final int INITIAL_SCORE = 0
+    private final int SCOREBOARD_FONT_SIZE = 24
+    private final int SCOREBOARD_MAX_PLAYERS = 11
+    private int scoreboardLabelX = 20
     private def inputMap = [:]
     private def playerList = [
             ["Red", Color.RED],
@@ -141,36 +144,12 @@ class FluxFlightFight extends ExampleBase implements Stepable {
         flapClips.add(loadAudio("/resources/audio/flap2.wav"))
         flapClips.add(loadAudio("/resources/audio/flap3.wav"))
 
-        // scoreboard
-        int scoreX = 50
-        Font scoreFont = new Font(30)
-        for (Bird bird: birds) {
-            Label score = new Label(bird.getName() + ": " + INITIAL_SCORE)
-            score.setTextFill(bird.getColor())
-            score.setFont(scoreFont)
-            score.setTranslateX(scoreX += 170)
-            score.setTranslateY(5)
-
-            ScaleTransition pulse = new ScaleTransition(Duration.seconds(0.4), score)
-            pulse.setByX(1.2)
-            pulse.setByY(1.2)
-            pulse.setCycleCount(2)
-            pulse.setAutoReverse(true)
-
-            graphRoot.getChildren().add(score)
-            def currentBird = bird // I originally used just "bird" in the closure, but see: http://blog.freeside.co/2013/03/29/groovy-gotcha-for-loops-and-closure-scope/
-            bird.scoreProperty().addListener({ obs, old, cur ->
-                score.setText(currentBird.getName() + ": " + cur)
-                pulse.jumpTo(Duration.ZERO) // This seems to keep scale in a good state when multiple animations are triggered and overlap
-                pulse.play()
-            } as ChangeListener)
-        }
-
         // Auto-Controllers
 //        new BirdAnimController(birds.get(0))
 //        BirdHoverRuleController bController1 = new BirdHoverRuleController(birds.get(1), 250, 10, 4)
 //        actorList.actors.add(bController1)
-        def robotBird = new Bird(500, GOAL_LEVEL, "ROBOT", alphaize(Color.DARKGRAY.darker().darker()), graphRoot, 0)
+        def robotBird = new Bird(500, GOAL_LEVEL, "Robot", alphaize(Color.DARKGRAY.darker().darker()), graphRoot, 0)
+        createScoreboard(robotBird)
         birds.add(robotBird)
         BirdHoverAndFlyController bController2 = new BirdHoverAndFlyController(robotBird, GOAL_LEVEL, 5, 3, 1)
         actorList.actors.add(bController2)
@@ -212,11 +191,11 @@ class FluxFlightFight extends ExampleBase implements Stepable {
     }
 
     void addNextPlayerWithKeyboard(List keyboardMap) {
-        // add object, hook up input, add scoreboard
         def (name, color) = playerList.removeAt(0)
         def newBird = new Bird(500, GOAL_LEVEL, name, alphaize(color), graphRoot, 0)
         birds.add(newBird)
         assignKeyboardInput(newBird, keyboardMap)
+        createScoreboard(newBird)
     }
 
     void addNextPlayerWithGamepad(Controller controller, List gamepadMap) {
@@ -224,6 +203,7 @@ class FluxFlightFight extends ExampleBase implements Stepable {
         def newBird = new Bird(500, GOAL_LEVEL, name, alphaize(color), graphRoot, 0)
         birds.add(newBird)
         assignGamepadInput(newBird, controller, gamepadMap)
+        createScoreboard(newBird)
     }
 
     /** Assign specific keyboardMap to player */
@@ -247,6 +227,34 @@ class FluxFlightFight extends ExampleBase implements Stepable {
             println "Adding gamepad input $newRow"
             inputMap[newRow] = wrappedClosure
         }
+    }
+
+    void createScoreboard(Bird bird) {
+        Font scoreFont = new Font(SCOREBOARD_FONT_SIZE)
+        Label score = new Label(bird.getName() + ": " + INITIAL_SCORE)
+        score.with {
+            setTextFill(bird.getColor())
+            setFont(scoreFont)
+            setTranslateX(scoreboardLabelX)
+            setTranslateY(5)
+            setId("scoreboard-${bird.getName()}")
+        }
+        scoreboardLabelX += width / SCOREBOARD_MAX_PLAYERS
+
+        ScaleTransition pulse = new ScaleTransition(Duration.seconds(0.2), score)
+        pulse.with {
+            setByX(0.3)
+            setByY(0.3)
+            setCycleCount(2)
+            setAutoReverse(true)
+        }
+
+        graphRoot.getChildren().add(score)
+        bird.scoreProperty().addListener({ obs, old, cur ->
+            score.setText(bird.getName() + ": " + cur)
+            pulse.jumpTo(Duration.ZERO) // This seems to keep scale in a good state when multiple animations are triggered and overlap
+            pulse.play()
+        } as ChangeListener)
     }
 
     void doBirdSound(Bird bird) {
@@ -281,6 +289,7 @@ class FluxFlightFight extends ExampleBase implements Stepable {
             }
         }
 
+        // collision detection
         for (int a = 0; a < birds.size(); ++a) {
             for (int b = a + 1; b < birds.size(); ++b) {
                 Bird bird1 = birds.get(a)
@@ -288,16 +297,15 @@ class FluxFlightFight extends ExampleBase implements Stepable {
                 Bird bird2 = birds.get(b)
                 Bounds bounds2 = bird2.getBounds()
                 if (bounds1.intersects(bounds2)) {
-                    println "got collision between $bird1 ${bird1.getName()} $bird2 ${bird2.getName()}"
                     laserClip.play(0.3, calcBalance(bird1.getX()), 1, 0.0, 1)
                     Vector2D intersectPt = boundsMid(bounds1, bounds2)
                     actorList.actors.add(SimpleExplosion.make(intersectPt, 50, alphaize(Color.WHITE, 0.5), graphRoot))
                     if (bounds1.getMinY() < bounds2.getMinY()) {
-                        System.out.println("higher joust by " + bird1 + " " + bird1.getName())
+                        System.out.println(bird1.getName() + " hit " + bird2.getName())
                         bird1.changeScore(1)
                         bird2.doDie()
                     } else if (bounds2.getMinY() < bounds1.getMinY()) {
-                        System.out.println("higher joust by " + bird2 + " " + bird2.getName())
+                        System.out.println(bird2.getName() + " hit " + bird1.getName())
                         bird2.changeScore(1)
                         bird1.doDie()
                     }
