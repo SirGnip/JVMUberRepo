@@ -19,6 +19,7 @@ import javafx.scene.layout.CornerRadii
 import javafx.scene.layout.Pane
 import javafx.scene.media.AudioClip
 import javafx.scene.paint.Color
+import javafx.scene.shape.Rectangle
 import javafx.scene.text.Font
 import javafx.stage.Stage
 import javafx.util.Duration
@@ -48,8 +49,8 @@ class FluxFlightFight extends ExampleBase implements Stepable {
     private final int SCOREBOARD_FONT_SIZE = 24
     private final int SCOREBOARD_MAX_PLAYERS = 11
     private int scoreboardLabelX = 20
-    private def inputMap = [:]
-    private def playerList = [
+    private Map inputMap = [:]
+    private List playerList = [
             ["Red", Color.RED],
             ["Blue", Color.BLUE],
             ["Yellow", Color.YELLOW],
@@ -137,6 +138,12 @@ class FluxFlightFight extends ExampleBase implements Stepable {
     protected void buildRoot(Stage stage, Pane pane) {
         graphRoot = pane
         graphRoot.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)))
+
+        // playfield border
+        def border = new Rectangle(0, height-edges.getHeight(), width, edges.getHeight())
+        border.setStroke(Color.WHITE)
+        border.setStrokeWidth(3)
+        graphRoot.getChildren().add(border)
 
         // set up sound
         laserClip = loadAudio("/resources/audio/laser.wav")
