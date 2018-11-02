@@ -108,7 +108,7 @@ public class Bird implements Actor {
         }
         if (offset.getY() != 0.0) {
             y.setValue(y.get() + offset.getY());
-            vel = Vector2D.ZERO;
+            vel = new Vector2D(vel.getX() * 0.4, 0); // stop any Y velocity and dampen X velocity
         }
     }
 
@@ -237,6 +237,6 @@ public class Bird implements Actor {
         List<Double> startingX = Arrays.asList(50.0, 250.0, 450.0, 650.0, 850.0, 1050.0);
         x.setValue(Flx.rndChoice(startingX));
         y.setValue(650);
-        vel = new Vector2D(0, 0);
+        vel = Vector2D.ZERO;
     }
 }
