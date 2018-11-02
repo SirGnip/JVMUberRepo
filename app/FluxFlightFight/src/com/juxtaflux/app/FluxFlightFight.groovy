@@ -116,12 +116,21 @@ class FluxFlightFight extends ExampleBase implements Stepable {
     ]
 
     private Map gamepadInputMaps = [
+            // "blue" light
             ([Controller.Type.GAMEPAD, 'Controller (ZD Game For Windows)', Component.Identifier.Button._0]): [
                 [Component.Identifier.Button._0, 1.0 as Float, {bird -> doBirdSound(bird); bird.handlePressFlap()}],
                 [Component.Identifier.Button._0, 0.0 as Float, {bird -> bird.handleReleaseFlap()}],
                 [Component.Identifier.Axis.POV, Component.POV.LEFT as Float, {bird -> bird.handleDirectionLeft()}],
                 [Component.Identifier.Axis.POV, Component.POV.RIGHT as Float, {bird -> bird.handleDirectionRight()}],
                 [Component.Identifier.Axis.POV, Component.POV.CENTER as Float, {bird -> bird.handleDirectionRelease()}]
+            ],
+            // "red" light (name is same as "purple" so would need to go to component count to differentiate between them)
+            ([Controller.Type.GAMEPAD, 'ZD-V', Component.Identifier.Button._2]): [
+                    [Component.Identifier.Button._2, 1.0 as Float, {bird -> doBirdSound(bird); bird.handlePressFlap()}],
+                    [Component.Identifier.Button._2, 0.0 as Float, {bird -> bird.handleReleaseFlap()}],
+                    [Component.Identifier.Axis.POV, Component.POV.LEFT as Float, {bird -> bird.handleDirectionLeft()}],
+                    [Component.Identifier.Axis.POV, Component.POV.RIGHT as Float, {bird -> bird.handleDirectionRight()}],
+                    [Component.Identifier.Axis.POV, Component.POV.CENTER as Float, {bird -> bird.handleDirectionRelease()}]
             ],
             ([Controller.Type.STICK, 'TigerGame PS/PS2 Game Controller Adapter', Component.Identifier.Button._2]): [
                 [Component.Identifier.Button._2, 1.0 as Float, {bird -> doBirdSound(bird); bird.handlePressFlap()}],
@@ -184,7 +193,8 @@ class FluxFlightFight extends ExampleBase implements Stepable {
         def robotBird = new Bird(500, GOAL_LEVEL, "Robot", alphaize(Color.DARKGRAY.darker().darker()), graphRoot, 0)
         createScoreboard(robotBird)
         birds.add(robotBird)
-        BirdHoverAndFlyController bController2 = new BirdHoverAndFlyController(robotBird, GOAL_LEVEL, 5, 3, 1)
+//        BirdHoverAndFlyController bController2 = new BirdHoverAndFlyController(robotBird, GOAL_LEVEL, 5, 3, 1)
+        def bController2 = new BirdHoverAndFlyRandomlyController(robotBird, 100, 500, 2, 2, 3)
         actorList.actors.add(bController2)
 
         // FrameStepper

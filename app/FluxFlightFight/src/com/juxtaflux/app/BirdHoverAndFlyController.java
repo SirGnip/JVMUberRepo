@@ -10,9 +10,9 @@ import java.util.function.Consumer;
 /** A rule-based controller that makes a {@link Bird} hover, fly to the side, slow down, drop */
 public class BirdHoverAndFlyController implements Actor {
     private Bird bird;
-    private int goalHeight;
+    protected int goalHeight;
     private final double MAX_Y_VEL = -50.0;
-    private Consumer<Double> state;
+    protected Consumer<Double> state;
 
     public BirdHoverAndFlyController(Bird bird, int goalHeight, double hoverDur, double quietDur, double horizAccelDur) {
         this.bird = bird;
@@ -38,7 +38,7 @@ public class BirdHoverAndFlyController implements Actor {
         state = (delta) -> {};
     }
 
-    private void transitionToHover() {
+    protected void transitionToHover() {
         state = this::hoverStep;
     }
 
