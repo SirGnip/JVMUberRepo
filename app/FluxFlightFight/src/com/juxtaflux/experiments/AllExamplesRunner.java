@@ -10,6 +10,7 @@ public class AllExamplesRunner extends Application {
     public void start(Stage primaryStage) throws Exception {
         new FlxExample().build().showAndWait();
         new GlowExperiment().build().showAndWait();
+        new JInputDump().build().showAndWait();
         new KitchenSinkExample().build().showAndWait();
         // BUG: the KitchenSinkExample.step() continues to be called while FluxFlightFight is running
         new FluxFlightFight().build().showAndWait();
