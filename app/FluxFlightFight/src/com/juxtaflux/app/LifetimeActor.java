@@ -4,10 +4,11 @@ import com.juxtaflux.fluxlib.Actor;
 
 /** {@link Actor} that is reaped after its lifetime elapses */
 public abstract class LifetimeActor implements Actor {
+    protected double lifetimeStart;
     protected double lifetime;
 
     LifetimeActor(double lifetime) {
-        this.lifetime = lifetime;
+        this.lifetimeStart = lifetime;this.lifetime = lifetime;
     }
 
     @Override

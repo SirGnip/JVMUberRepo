@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 
 /** Experiment to see if a class can use functional interfaces to define an Actor's look and behavior instead of inheritance or composition */
 public class GenericLifetimeActor extends LifetimeActor {
-    private Node node;
+    protected Node node;
     private Pane parent;
 
     public GenericLifetimeActor(double lifetime, Pane parent, Supplier<Node> nodeSupplier) {

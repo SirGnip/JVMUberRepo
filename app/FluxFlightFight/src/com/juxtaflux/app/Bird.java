@@ -22,14 +22,14 @@ import static com.juxtaflux.fluxlib.Flx.*;
 
 /** Represents the main create the player and robots control in this game */
 public class Bird implements Actor {
-    private final double size = 40.0; //
+    public final double size = 40.0; // roughly...
     private String name;
-    private Pane parent;
     private Color color;
     private DoubleProperty x;
     private DoubleProperty y;
     private IntegerProperty score; // TODO: theoretically this probably should be on some kind of player object, not the Actor
     private Polygon poly;
+    private Polygon deathPoly;
     private Vector2D vel = new Vector2D(0, 120);
     private Vector2D gravity = new Vector2D(0, 400);
     private double maxYVel = 600;
@@ -52,7 +52,8 @@ public class Bird implements Actor {
     public Bird(double x, double y, String name, Color color, Pane parent, int startScore) {
         this.name = name;
         this.color = color;
-        parent.getChildren().add(makeGraphRoot());
+        makeGraphRoot();
+        parent.getChildren().addAll(poly, deathPoly);
         this.x.setValue(x);
         this.y.setValue(y);
         this.score = new SimpleIntegerProperty(startScore);
@@ -108,7 +109,7 @@ public class Bird implements Actor {
         }
         if (offset.getY() != 0.0) {
             y.setValue(y.get() + offset.getY());
-            vel = new Vector2D(vel.getX() * 0.4, 0); // stop any Y velocity and dampen X velocity
+            vel = new Vector2D(vel.getX() * 0.4, 0); // stop any Y velocity and dampen X velocity // NOTE: this is NOT frame-rate independent
         }
     }
 
@@ -206,6 +207,7 @@ public class Bird implements Actor {
 
     private Node makeGraphRoot() {
         poly = new Polygon();
+        deathPoly = new Polygon();
         double s = size / 2;
         double s2 = (size / 2) + 5;
         double s3 = 5.0;
@@ -218,8 +220,12 @@ public class Bird implements Actor {
                 s2, s3, // beak
                 s, 0.0 // right
         });
+        deathPoly.getPoints().addAll(poly.getPoints());
         poly.setFill(color);
+        deathPoly.setFill(color);
         poly.setStroke(color);
+        deathPoly.setStroke(color);
+        deathPoly.setOpacity(0.0);
         x = poly.translateXProperty();
         y = poly.translateYProperty();
 
@@ -233,10 +239,13 @@ public class Bird implements Actor {
         return poly;
     }
 
-    public void doDie() {
+    public Polygon doDie() {
+        deathPoly.setTranslateX(x.getValue());
+        deathPoly.setTranslateY(y.getValue());
         List<Double> startingX = Arrays.asList(50.0, 250.0, 450.0, 650.0, 850.0, 1050.0);
         x.setValue(Flx.rndChoice(startingX));
         y.setValue(650);
         vel = Vector2D.ZERO;
+        return deathPoly;
     }
 }

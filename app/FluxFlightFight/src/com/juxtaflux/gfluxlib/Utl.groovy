@@ -4,7 +4,7 @@ import javafx.scene.Group
 import javafx.scene.Node
 
 /** Generic Groovy-based JavaFX utils */
-class UtlNOT_USED_YET {
+class Utl {
     static <T extends Node> T setPos(double x, double y, T node) {
         node.setTranslateX(x)
         node.setTranslateY(y)
@@ -56,7 +56,7 @@ class UtlNOT_USED_YET {
         // When using returnWith, the IDE doesn't seem to know the type of the delegate object, so the IDE
         // reports "cannot resolve symbol" for method calls in the closure.
         Object.metaClass.returnWith = { Closure clos ->
-            return utl.returnWith(delegate, clos)
+            return Utl.returnWith(delegate, clos)
         }
     }
 }

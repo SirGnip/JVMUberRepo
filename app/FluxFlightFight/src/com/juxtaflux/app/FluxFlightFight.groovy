@@ -6,7 +6,11 @@ import com.juxtaflux.fluxlib.Flx
 import com.juxtaflux.fluxlib.FrameStepper
 import com.juxtaflux.fluxlib.Stepable
 import com.juxtaflux.gfluxlib.Rect2D
+import com.juxtaflux.gfluxlib.Utl
+import javafx.animation.FadeTransition
+import javafx.animation.KeyFrame
 import javafx.animation.ScaleTransition
+import javafx.animation.Timeline
 import javafx.beans.value.ChangeListener
 import javafx.geometry.BoundingBox
 import javafx.geometry.Bounds
@@ -15,6 +19,8 @@ import javafx.geometry.Rectangle2D
 import javafx.scene.Cursor
 import javafx.scene.Parent
 import javafx.scene.control.Label
+import javafx.scene.effect.DisplacementMap
+import javafx.scene.effect.FloatMap
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCombination
 import javafx.scene.input.KeyEvent
@@ -24,6 +30,8 @@ import javafx.scene.layout.CornerRadii
 import javafx.scene.layout.Pane
 import javafx.scene.media.AudioClip
 import javafx.scene.paint.Color
+import javafx.scene.shape.Circle
+import javafx.scene.shape.Polygon
 import javafx.scene.shape.Rectangle
 import javafx.scene.text.Font
 import javafx.scene.transform.Scale
@@ -53,6 +61,9 @@ class FluxFlightFight extends ExampleBase implements Stepable {
     private List<AudioClip> flapClips = new ArrayList<>()
     private Pane graphRoot
     private Random rnd = new Random()
+    private DisplacementMap fuzzMap1
+    private DisplacementMap fuzzMap2
+    private DisplacementMap fuzzMap3
     private final int GOAL_LEVEL = 500
     private final int INITIAL_SCORE = 0
     private final int SCOREBOARD_FONT_SIZE = 24
@@ -164,10 +175,38 @@ class FluxFlightFight extends ExampleBase implements Stepable {
         stage.getScene().setCursor(Cursor.NONE)
     }
 
+    private static DisplacementMap makeFuzzMap(rnd, Double offset, width, height) {
+        Double half = offset/2
+        FloatMap floatMap = new FloatMap()
+        floatMap.setWidth(width)
+        floatMap.setHeight(height)
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                floatMap.setSamples(i, j, rnd.nextDouble()*offset-half as Float, rnd.nextDouble()*offset-half as Float)
+            }
+        }
+        DisplacementMap displacementMap = new DisplacementMap()
+        displacementMap.setMapData(floatMap)
+        return displacementMap
+    }
+
     @Override
     protected void buildRoot(Stage stage, Pane pane) {
+        Utl.metaprogrammingInit()
+
+        def fuzzOffset = 0.4
+        fuzzMap1 = makeFuzzMap(rnd, fuzzOffset, width, height)
+        fuzzMap2 = makeFuzzMap(rnd, fuzzOffset, width, height)
+        fuzzMap3 = makeFuzzMap(rnd, fuzzOffset, width, height)
+
         graphRoot = pane
         graphRoot.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)))
+
+        // background
+        def gridGray1 = Flx.makeGrid(0, 0, width, height, 14, Color.GRAY.darker().darker().darker().darker())
+        def gridGray2 = Flx.makeGrid(0, 0, width, height, 15, Color.GRAY.darker().darker().darker())
+        def gridBlue = Flx.makeGrid(0, 0, width, height, 16, Color.MIDNIGHTBLUE.darker().darker())
+        graphRoot.getChildren().addAll(gridGray1, gridGray2, gridBlue)
 
         // Fullscreen
         if (FULLSCREEN) {
@@ -177,6 +216,7 @@ class FluxFlightFight extends ExampleBase implements Stepable {
         // playfield border
         def border = new Rectangle(0, height-edges.getHeight(), width, edges.getHeight())
         border.setStroke(Color.WHITE)
+        border.setFill(Color.TRANSPARENT)
         border.setStrokeWidth(3)
         graphRoot.getChildren().add(border)
 
@@ -190,7 +230,7 @@ class FluxFlightFight extends ExampleBase implements Stepable {
 //        new BirdAnimController(birds.get(0))
 //        BirdHoverRuleController bController1 = new BirdHoverRuleController(birds.get(1), 250, 10, 4)
 //        actorList.actors.add(bController1)
-        def robotBird = new Bird(500, GOAL_LEVEL, "Robot", alphaize(Color.DARKGRAY.darker().darker()), graphRoot, 0)
+        def robotBird = new Bird(500, GOAL_LEVEL, "Robot", Color.DARKGRAY.darker().darker(), graphRoot, 0)
         createScoreboard(robotBird)
         birds.add(robotBird)
 //        BirdHoverAndFlyController bController2 = new BirdHoverAndFlyController(robotBird, GOAL_LEVEL, 5, 3, 1)
@@ -233,7 +273,7 @@ class FluxFlightFight extends ExampleBase implements Stepable {
 
     void addNextPlayerWithKeyboard(List keyboardMap) {
         def (name, color) = playerList.removeAt(0)
-        def newBird = new Bird(500, GOAL_LEVEL, name, alphaize(color), graphRoot, 0)
+        def newBird = new Bird(500, GOAL_LEVEL, name, color, graphRoot, 0)
         birds.add(newBird)
         assignKeyboardInput(newBird, keyboardMap)
         createScoreboard(newBird)
@@ -343,12 +383,10 @@ class FluxFlightFight extends ExampleBase implements Stepable {
                     actorList.actors.add(SimpleExplosion.make(intersectPt, 50, alphaize(Color.WHITE, 0.5), graphRoot))
                     if (bounds1.getMinY() < bounds2.getMinY()) {
                         System.out.println(bird1.getName() + " hit " + bird2.getName())
-                        bird1.changeScore(1)
-                        bird2.doDie()
+                      handleBirdCollision(bird1, bird2, intersectPt)
                     } else if (bounds2.getMinY() < bounds1.getMinY()) {
                         System.out.println(bird2.getName() + " hit " + bird1.getName())
-                        bird2.changeScore(1)
-                        bird1.doDie()
+                        handleBirdCollision(bird2, bird1, intersectPt)
                     }
                 }
             }
@@ -356,6 +394,31 @@ class FluxFlightFight extends ExampleBase implements Stepable {
 
         // JInput JOYSTICK
         joyStep()
+    }
+
+    private void handleBirdCollision(Bird winnerBird, Bird loserBird, Vector2D intersectPt) {
+        def deathFx = new GenericLifetimeFadeActor(0.3, graphRoot,
+            {new Circle(intersectPt.getX(), intersectPt.getY(), loserBird.size/2).returnWith({setFill(Color.WHITE)})})
+        actorList.actors.add(deathFx)
+        winnerBird.changeScore(1)
+        Polygon deathPoly = loserBird.doDie()
+
+        FadeTransition fade = new FadeTransition(Duration.seconds(4), deathPoly)
+        fade.setFromValue(1.0)
+        fade.setToValue(0.0)
+        fade.play()
+        deathPoly.setEffect(fuzzMap1)
+        def timeline = new Timeline()
+        timeline.setOnFinished {
+            deathPoly.setEffect(null)
+        }
+        timeline.getKeyFrames().addAll(
+                new KeyFrame(Duration.seconds(0.04), {e -> deathPoly.setEffect(fuzzMap2)}),
+                new KeyFrame(Duration.seconds(0.08), {e -> deathPoly.setEffect(fuzzMap3)}),
+                new KeyFrame(Duration.seconds(0.12), {e -> deathPoly.setEffect(fuzzMap1)}),
+        )
+        timeline.setCycleCount(30)
+        timeline.play()
     }
 
     // JInput GAMEPAD
