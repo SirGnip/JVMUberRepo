@@ -195,9 +195,11 @@ class FluxFlightFight extends ExampleBase implements Stepable {
         Utl.metaprogrammingInit()
 
         def fuzzOffset = 0.4
-        fuzzMap1 = makeFuzzMap(rnd, fuzzOffset, width, height)
-        fuzzMap2 = makeFuzzMap(rnd, fuzzOffset, width, height)
-        fuzzMap3 = makeFuzzMap(rnd, fuzzOffset, width, height)
+        int fuzzWidth = 20
+        int fuzzHeight = 20
+        fuzzMap1 = makeFuzzMap(rnd, fuzzOffset, fuzzWidth, fuzzHeight)
+        fuzzMap2 = makeFuzzMap(rnd, fuzzOffset, fuzzWidth, fuzzHeight)
+        fuzzMap3 = makeFuzzMap(rnd, fuzzOffset, fuzzWidth, fuzzHeight)
 
         graphRoot = pane
         graphRoot.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)))
