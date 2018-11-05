@@ -447,4 +447,10 @@ class FluxFlightFight extends ExampleBase implements Stepable {
             }
         }
     }
+
+    @Override
+    <T extends javafx.event.Event> void onExit(T event) {
+        stepper.deregister()
+        super.onExit(event)
+    }
 }

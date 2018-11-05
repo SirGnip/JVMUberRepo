@@ -1,6 +1,7 @@
 package com.juxtaflux.experiments;
 
 import javafx.application.Application;
+import javafx.event.Event;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -39,7 +40,10 @@ public abstract class ExampleBase extends Application {
 
     /** programmatic way to run this class, call .show() or showAndWait() on returned Stage */
     public Stage build() throws Exception {
-        return sharedBuild(new Stage());
+        Stage newStage = new Stage();
+        sharedBuild(newStage);
+        newStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::onExit);
+        return newStage;
     }
 
     private Stage sharedBuild(Stage stage) {
@@ -59,6 +63,10 @@ public abstract class ExampleBase extends Application {
                         WindowEvent.WINDOW_CLOSE_REQUEST
                 )
         );
+    }
+
+    /** Subclass code should override this, doing all its work before calling super.onExit(t) */
+    public <T extends Event> void onExit(T event) {
     }
 
     /** Subclass code should override this, generate a scene graph, and return the root */

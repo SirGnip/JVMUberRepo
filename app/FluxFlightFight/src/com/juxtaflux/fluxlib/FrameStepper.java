@@ -12,12 +12,13 @@ import static com.google.common.base.Preconditions.checkArgument;
  */
 public class FrameStepper {
     private static final int NANOS_PER_SEC = 1000000000;
+    AnimationTimer timer;
+    Stepable stepable;
     private int totalFrameCount = 0;
     private Duration startTime = Duration.UNKNOWN;
     private Duration lastTime = Duration.UNKNOWN;
     private Duration intervalTime = Duration.UNKNOWN;
     private int intervalFrameCount = 0;
-    Stepable stepable;
 
     public FrameStepper(Stepable stepable) {
         this.stepable = stepable;
@@ -28,7 +29,7 @@ public class FrameStepper {
 
     /** Start timer and return instance (for chaining) */
     public FrameStepper register() {
-        new AnimationTimer() {
+        timer = new AnimationTimer() {
             @Override
             public void handle(long nanoTimestamp) {
                 ++totalFrameCount;
@@ -37,8 +38,13 @@ public class FrameStepper {
                 stepable.step(curTime.subtract(lastTime).toSeconds());
                 lastTime = curTime;
             }
-        }.start();
+        };
+        timer.start();
         return this;
+    }
+
+    public void deregister() {
+        timer.stop();
     }
 
     public int getTotalFrameCount() {
