@@ -57,18 +57,14 @@ class FluxFlightFight extends ExampleBase implements Stepable {
     private ActorList actorList = new ActorList()
     private FrameStepper stepper
     private BoundingBox edges = new BoundingBox(0, 50, width, height-50)
-    private AudioClip laserClip
+    private AudioClip deathAudio
     private List<AudioClip> flapClips = new ArrayList<>()
     private Pane graphRoot
     private Random rnd = new Random()
     private DisplacementMap fuzzMap1
     private DisplacementMap fuzzMap2
     private DisplacementMap fuzzMap3
-    private final int GOAL_LEVEL = 500
-    private final int INITIAL_SCORE = 0
-    private final int SCOREBOARD_FONT_SIZE = 24
-    private final int SCOREBOARD_MAX_PLAYERS = 11
-    private int scoreboardLabelX = 20
+    private int scoreboardLabelX = Cfg.Scoreboard.LABEL_X_START
     private Map inputMap = [:]
     private List playerList = [
             ["Red", Color.RED],
@@ -223,19 +219,19 @@ class FluxFlightFight extends ExampleBase implements Stepable {
         graphRoot.getChildren().add(border)
 
         // set up sound
-        laserClip = loadAudio("/resources/audio/laser.wav")
-        flapClips.add(loadAudio("/resources/audio/flap1.wav"))
-        flapClips.add(loadAudio("/resources/audio/flap2.wav"))
-        flapClips.add(loadAudio("/resources/audio/flap3.wav"))
+        deathAudio = loadAudio(Cfg.Audio.DEATH)
+        flapClips.add(loadAudio(Cfg.Audio.FLAP1))
+        flapClips.add(loadAudio(Cfg.Audio.FLAP2))
+        flapClips.add(loadAudio(Cfg.Audio.FLAP3))
 
         // Auto-Controllers
 //        new BirdAnimController(birds.get(0))
 //        BirdHoverRuleController bController1 = new BirdHoverRuleController(birds.get(1), 250, 10, 4)
 //        actorList.actors.add(bController1)
-        def robotBird = new Bird(500, GOAL_LEVEL, "Robot", Color.DARKGRAY.darker().darker(), graphRoot, 0)
+        def robotBird = new Bird(500, Cfg.GOAL_LEVEL, "Robot", Color.DARKGRAY.darker().darker(), graphRoot, 0)
         createScoreboard(robotBird)
         birds.add(robotBird)
-//        BirdHoverAndFlyController bController2 = new BirdHoverAndFlyController(robotBird, GOAL_LEVEL, 5, 3, 1)
+//        BirdHoverAndFlyController bController2 = new BirdHoverAndFlyController(robotBird, Cfg.GOAL_LEVEL, 5, 3, 1)
         def bController2 = new BirdHoverAndFlyRandomlyController(robotBird, 100, 500, 2, 2, 3)
         actorList.actors.add(bController2)
 
@@ -275,7 +271,7 @@ class FluxFlightFight extends ExampleBase implements Stepable {
 
     void addNextPlayerWithKeyboard(List keyboardMap) {
         def (name, color) = playerList.removeAt(0)
-        def newBird = new Bird(500, GOAL_LEVEL, name, color, graphRoot, 0)
+        def newBird = new Bird(500, Cfg.GOAL_LEVEL, name, color, graphRoot, 0)
         birds.add(newBird)
         assignKeyboardInput(newBird, keyboardMap)
         createScoreboard(newBird)
@@ -283,7 +279,7 @@ class FluxFlightFight extends ExampleBase implements Stepable {
 
     void addNextPlayerWithGamepad(Controller controller, List gamepadMap) {
         def (name, color) = playerList.removeAt(0)
-        def newBird = new Bird(500, GOAL_LEVEL, name, alphaize(color), graphRoot, 0)
+        def newBird = new Bird(500, Cfg.GOAL_LEVEL, name, alphaize(color), graphRoot, 0)
         birds.add(newBird)
         assignGamepadInput(newBird, controller, gamepadMap)
         createScoreboard(newBird)
@@ -313,8 +309,8 @@ class FluxFlightFight extends ExampleBase implements Stepable {
     }
 
     void createScoreboard(Bird bird) {
-        Font scoreFont = new Font(SCOREBOARD_FONT_SIZE)
-        Label score = new Label(bird.getName() + ": " + INITIAL_SCORE)
+        Font scoreFont = new Font(Cfg.Scoreboard.FONT_SIZE)
+        Label score = new Label(bird.getName() + ": " + Cfg.Scoreboard.INITIAL_SCORE)
         score.with {
             setTextFill(bird.getColor())
             setFont(scoreFont)
@@ -322,7 +318,7 @@ class FluxFlightFight extends ExampleBase implements Stepable {
             setTranslateY(5)
             setId("scoreboard-${bird.getName()}")
         }
-        scoreboardLabelX += width / SCOREBOARD_MAX_PLAYERS
+        scoreboardLabelX += width / Cfg.Scoreboard.MAX_PLAYERS
 
         ScaleTransition pulse = new ScaleTransition(Duration.seconds(0.2), score)
         pulse.with {
@@ -380,7 +376,7 @@ class FluxFlightFight extends ExampleBase implements Stepable {
                 Bird bird2 = birds.get(b)
                 Bounds bounds2 = bird2.getBounds()
                 if (bounds1.intersects(bounds2)) {
-                    laserClip.play(0.3, calcBalance(bird1.getX()), 1, 0.0, 1)
+                    deathAudio.play(0.3, calcBalance(bird1.getX()), 1, 0.0, 1)
                     Vector2D intersectPt = boundsMid(bounds1, bounds2)
                     actorList.actors.add(SimpleExplosion.make(intersectPt, 50, alphaize(Color.WHITE, 0.5), graphRoot))
                     if (bounds1.getMinY() < bounds2.getMinY()) {

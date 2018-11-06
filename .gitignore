@@ -1,8 +1,7 @@
 out/
 
 3p/
-app/FluxFlightFightBAK/
-lib/JavaFXUtils/0.2/
+lib/
 
 # IntelliJ
 **/.idea/workspace.xml
