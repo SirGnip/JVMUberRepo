@@ -52,7 +52,6 @@ import static com.juxtaflux.fluxlib.Flx.boundsMid
 import static com.juxtaflux.fluxlib.Flx.rndChoice
 
 class FluxFlightFight extends ExampleBase implements Stepable {
-    private final Boolean FULLSCREEN = true
     private List<Bird> birds = new ArrayList<>()
     private ActorList actorList = new ActorList()
     private FrameStepper stepper
@@ -207,7 +206,7 @@ class FluxFlightFight extends ExampleBase implements Stepable {
         graphRoot.getChildren().addAll(gridGray1, gridGray2, gridBlue)
 
         // Fullscreen
-        if (FULLSCREEN) {
+        if (Cfg.FULLSCREEN) {
             enableFullscreen(stage, pane)
         }
 
