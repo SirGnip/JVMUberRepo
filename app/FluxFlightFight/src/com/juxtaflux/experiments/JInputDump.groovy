@@ -1,8 +1,9 @@
 package com.juxtaflux.experiments
 
-import javafx.scene.control.Label
 import javafx.scene.layout.Pane
+import javafx.scene.paint.Color
 import javafx.scene.text.Font
+import javafx.scene.text.Text
 import javafx.stage.Stage
 import net.java.games.input.Component
 import net.java.games.input.Controller
@@ -12,7 +13,8 @@ import net.java.games.input.ControllerEnvironment
 class JInputDump extends ExampleBase {
     @Override
     void buildRoot(Stage stage, Pane pane) {
-        Label info = new Label("Dumping input controller info to stdout")
+        Text info = new Text(20, 50,"Dumping input controller info to stdout")
+        info.setFill(Color.GREEN)
         info.setFont(new Font(40))
         pane.getChildren().addAll(info)
 

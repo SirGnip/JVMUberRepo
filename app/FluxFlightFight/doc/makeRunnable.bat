@@ -1,5 +1,5 @@
 
-echo This makes a directory that you can copoy to any machine and run the app
+echo This makes a directory that you can copy to any machine and run the app
 
 mkdir ..\out\runnable
 copy ..\out\artifacts\FluxFlightFight\*.jar ..\out\runnable\

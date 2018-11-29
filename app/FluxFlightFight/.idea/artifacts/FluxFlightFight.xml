@@ -11,6 +11,7 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/../../3p/guava/23.0/guava-23.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../3p/JInput/Jenkins-2841/dist/jinput.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../../3p/groovy/groovy-2.4.15/embeddable/groovy-all-2.4.15.jar" path-in-jar="/" />
+      <element id="module-output" name="standInResources" />
     </root>
   </artifact>
 </component>

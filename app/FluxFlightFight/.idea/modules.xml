@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FluxFlightFight.iml" filepath="$PROJECT_DIR$/FluxFlightFight.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../lib/standInResources/standInResources.iml" filepath="$PROJECT_DIR$/../../lib/standInResources/standInResources.iml" />
     </modules>
   </component>
 </project>

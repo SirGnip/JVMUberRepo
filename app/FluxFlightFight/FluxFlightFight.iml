@@ -50,5 +50,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="groovy-2.4.15" level="application" />
+    <orderEntry type="module" module-name="standInResources" />
   </component>
 </module>

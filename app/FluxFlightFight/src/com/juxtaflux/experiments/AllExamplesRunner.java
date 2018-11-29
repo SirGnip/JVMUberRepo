@@ -11,8 +11,8 @@ public class AllExamplesRunner extends Application {
         new FlxExample().build().showAndWait();
         new GlowExperiment().build().showAndWait();
         new JInputDump().build().showAndWait();
+        new AudioPlaybackTest().build().showAndWait();
         new KitchenSinkExample().build().showAndWait();
-        // BUG: the KitchenSinkExample.step() continues to be called while FluxFlightFight is running
         new FluxFlightFight().build().showAndWait();
         System.out.println(getClass().getSimpleName() + " is DONE");
     }

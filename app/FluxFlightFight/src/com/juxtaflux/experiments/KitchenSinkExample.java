@@ -70,26 +70,26 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         graphRoot = pane;
         graphRoot.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 //        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-//        String appConfigPath = rootPath + "/resources/flux.properties";
+//        String appConfigPath = rootPath + "/com/juxtaflux/standInResources/text/sample.properties";
 //        System.out.println("properties path: " + appConfigPath);
 
-//        URL propUrl = getClass().getResource("/resources/flux.properties");
+//        URL propUrl = getClass().getResource("/com/juxtaflux/standInResources/text/sample.properties");
 
         // read from .properties file
-        InputStream in = getClass().getResourceAsStream("/resources/flux.properties");
+        InputStream in = getClass().getResourceAsStream("/com/juxtaflux/standInResources/text/sample.properties");
         Properties props = new Properties();
         try {
             props.load(in);
             in.close();
             System.out.println(props);
             String stuff = props.getProperty("stuff");
-            System.out.println("STUFF read from flie: " + stuff);
+            System.out.println("STUFF read from file: " + stuff);
         } catch (Exception ex) {
-            System.out.println("ERROR " + ex);
+            System.out.println("ERROR reading from property file " + ex);
         }
 
         // read text file from .jar
-        InputStream in2 = getClass().getResourceAsStream("/resources/blah.txt");
+        InputStream in2 = getClass().getResourceAsStream("/com/juxtaflux/standInResources/text/sentence.txt");
         System.out.println("input stream: " + in2);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in2));
         System.out.println("reader: " + reader);
@@ -99,21 +99,21 @@ public class KitchenSinkExample extends ExampleBase implements Stepable {
         txt.forEach(s -> System.out.println(s));
 
         // set up image
-        URL imgUrl = getClass().getResource("/resources/img/cloud.png");
+        URL imgUrl = getClass().getResource("/com/juxtaflux/standInResources/img/scribble.png");
         System.out.println("Loading image from URL: " + imgUrl);
         checkNotNull(imgUrl);
         ImageView img = new ImageView(imgUrl.toString());
         img.setPreserveRatio(true);
         img.setTranslateX(300);
         img.setTranslateY(250);
-        img.setOpacity(0.15);
+        img.setOpacity(0.5);
         graphRoot.getChildren().add(img);
 
         // set up sound
-        laserClip = loadAudio("/resources/audio/laser.wav");
-        flapClips.add(loadAudio("/resources/audio/flap1.wav"));
-        flapClips.add(loadAudio("/resources/audio/flap2.wav"));
-        flapClips.add(loadAudio("/resources/audio/flap3.wav"));
+        laserClip = loadAudio("/com/juxtaflux/standInResources/audio/voice/crash.wav");
+        flapClips.add(loadAudio("/com/juxtaflux/standInResources/audio/voice/click1.wav"));
+        flapClips.add(loadAudio("/com/juxtaflux/standInResources/audio/voice/click2.wav"));
+        flapClips.add(loadAudio("/com/juxtaflux/standInResources/audio/voice/click3.wav"));
 
         // button
         Button btn = new Button("Click ME");

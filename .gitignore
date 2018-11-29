@@ -1,7 +1,5 @@
 out/
-
 3p/
-lib/
 
 # IntelliJ
 **/.idea/workspace.xml
