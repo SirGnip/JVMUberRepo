@@ -2,15 +2,15 @@
 
 ### Brainstorm
 
-glow based joust for 4+ people."flux fight" "juxta-fight" "Lance-a-lot" (name already taken)
+glow based flight fight for 4+ people."flux fight" "juxta-fight" "Lance-a-lot" (name already taken)
 geometric graphic sensibility. glow on nearly everything. use non-glow to draw attention to stuff. 4
 players minimum. have a bunch of different round types (physics changes, rate of falling,
-different level layouts). have other objectives for "egg wave" (stunt flying, speed runs of a
+different level layouts). have other objectives for "bonus waves" (stunt flying, speed runs of a
 course, survival, pickup micro-quests). visual themes: electricity, lasers, sparks. for design of
 characters, think about the old x-pilot way of being able to define your own ship. ascii or
-excel-based level design? Can I get the boys involved somehow? let them design levels? Does a
+excel-based level design? Can I get others involved somehow? let them design levels? Does a
 "level" specify the "physics" (gravity strength, flap strength, forward motion?)? Or, does the
-game mix physics with game level together some other way?  Hwo do I differentiate the visuals
+game mix physics with game level together some other way?  How do I differentiate the visuals
 from Geometry Wars? Limited color palette? Keep black and white and gray, except for the parts
 that I want to highlight (player colors). Can I change the angle of motion blur with a property
 so I can dynamically drive the direction of the motion blur? Box blur looks pretty good, if not
@@ -62,7 +62,8 @@ better than Glow.
     - rocks have many uses "collection", "delivery", "weapon", "target practice", "hit trigger box"
 - could create a "plinko" game with picking up rocks and dropping them and trrying to get them into baskets, or certain areas. Rocks would be "bombs" where they would take on some horizontal momentum
 - have a "glide" mechanic where if you hold your button, you can't flap, but you will glide down. To what advantage? How do you control with the two buttons left? add another button?
-- Portals for teleportin
+- Portals for teleporting
+- air currents that exert a force and blow you up or down.
 - chain of baby birds that follow you (sffect would be nice of this undulating trail that follows you) that you need to collect from other players. They follow behind you in a line that follow in a line your moves. When you bite the end of the tail, you steal a baby bird.
 - Gravity changers (up, down, sides)
     - Circular gravity. Flapping propells you away from center.
@@ -77,3 +78,13 @@ better than Glow.
 - flying dinosaurs
 - paper airplanes
 - quadcopters/drones
+- spaceships
+- abstract shapes that fly (hyper-abstract airplanes)
+- stick figures flapping arms and flying like superman
+
+##### Environmental effects
+- have very subtle environmental effects and animations to add variety?
+- rain, show, lightening, clouds, haze, gray skies, sunny
+- birds flying, rain, leaves blowing, stars twinkling
+- have moon that rises, glows, pulses
+- should these environmental effects be gameplay effecting?

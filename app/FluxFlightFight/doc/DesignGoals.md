@@ -25,7 +25,7 @@ Arch layer 2
 	- for unit testing it shouldn't require outside "services". For a game, think of "graphics", "sound", "input", "file system" as "external services". So, my unit tests can run without "external services". Then, have another layer of testing where I do "integration testing" where i *do* depend on external services (graphics, sound, input, file system) but don't test as deeply. If I am in experimental mode, don't do any testing.
     - dependency injection?
         - Ex: inject a do-nothing dummy SoundManager into app for testing
-- use text files or Excel as a level editing tool so that boys can be involved in making levels.
+- use text files or Excel as a level editing tool so that users can be involved in making levels.
 - try to do keep libraries and apps in one multi-project so that IntelliJ refactorings can affect all of it at once
     - as I'm learning Java and exploring the game, this will allow me to change things much more quickly
     - as project ages, I might want to break out the library into its own external jar and individual apps into their own repos for ease of sharing with others. 

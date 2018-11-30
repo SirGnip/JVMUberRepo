@@ -1,60 +1,20 @@
-# JavaFX uberrepo
+# Java uber repo
 
-# thoughts
-do an uber repo for my JavaFX code (games and UI utils). But, acknowledge that the repo may contain some sub artifacts that could be used by other code external to the uber repo (if I write generic Java string utils, have things structured that I could build a .jar of just the string utils instead of the whole JavaFX uber-repo.  Just because everything is in the uber-repo doesn’t mean it has to be distributed that way.
+This is an uber repo that contains multiple applications and libraries.  The applications are mostly game experiments and written in Java and Groovy, relying on JavaFX for graphics and audio. 
 
-# details
+# Individual components
 
-java/
-java/uber or repo
-java/sandbox
-java/learning
+Apps
+- [app/FluxFlightFight](app/FluxFlightFight): Work-in-progress: Multiplayer game experiment. Fly and hit your opponent higher than they hit you.  Gamepad and keyboard support for 2-8+ players. 
+- [app/ClipDashboard](app/ClipDashboard): Desktop utilitiy for managing and mutating text in the system clipboard.  
 
-get everything building
-- x javafxutils
-- x clipdashboard
-- fluxflihgt
-- javafluxflight
-
-don't commit todo.md files. have one in each sub project?
-keep all intellij stuff separate for now
-keep all library building separate for now
-
-java/ <uber repo>
-java/learning
+Libraries
+- [lib/JavaFXUtils](lib/JavaFXUtils): classes to assist with JavaFX.
+- [lib/standInResources](lib/standInResources): library containing small and simple media resources (images, audio, text) for experimental purposes. 
 
 
-cd uberrepo
-git remote add -f cliprepo /c/_other/PLAY/MYCLIP/
-git merge cliprepo/master --allow-unrelated-histories
+# Release Notes
 
+Can see brief release notes with:
 
-git rebase cliprepo/master???
-git remote rm cliprepo
-
-
-
-mkdir uberrepo
-cd uberrepo
-git init .
-create uber README.md (mostly empty) and add/commit it
-
-git remote add -f cliprepo /c/_other/PLAY/MYCLIP/
-git rebase cliprepo/master
-git remote rm cliprepo
-mkdir clipdash
-git mv 
-
-
-
-
-
-* ba8367f (HEAD -> master) Inital uber repo commit
-* 9a0b53b (tag: 0.2, fxlibrepo/master) Show text for Labeled objects in scene graph dump
-* 8bb2672 (tag: 0.1) Initial commit
-
-
-* c7ebbaa Show text for Labeled objects in scene graph dump
-* a432689 Initial commit
-
-
+    git tag -l --format="%(refname:short) %(taggerdate:short) %(objectname:short) %(contents:lines=1)"
