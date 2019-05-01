@@ -36,18 +36,24 @@ public class Bird implements Actor {
     private double maxXVel = 600;
     private boolean leftPressed = false;
     private boolean rightPressed = false;
+    enum MotionState {
+        FLYING, WALKING
+    }
+    private MotionState motionState = MotionState.FLYING;
     private enum Facing {
-        LEFT, RIGHT, NEUTRAL;
+        LEFT, RIGHT, NEUTRAL
     }
     private Facing facing = Facing.NEUTRAL;
     private boolean isFlapDown = false;
 
-    private double VERT_IMPULSE = 100.0;
-    private double HORIZ_IMPULSE = 60.0;
-    private Vector2D RIGHT_IMPULSE = new Vector2D(HORIZ_IMPULSE, 0);
-    private Vector2D LEFT_IMPULSE = new Vector2D(-HORIZ_IMPULSE, 0);
-    private Vector2D UP_IMPULSE = new Vector2D(0, -VERT_IMPULSE);
-
+    private final double VERT_IMPULSE = 100.0;
+    private final double HORIZ_IMPULSE = 60.0;
+    private final double HORIZ_WALK_SPEED = 100;
+    private final Vector2D RIGHT_IMPULSE = new Vector2D(HORIZ_IMPULSE, 0);
+    private final Vector2D LEFT_IMPULSE = new Vector2D(-HORIZ_IMPULSE, 0);
+    private final Vector2D UP_IMPULSE = new Vector2D(0, -VERT_IMPULSE);
+    private final Vector2D LEFT_WALK = new Vector2D(-HORIZ_WALK_SPEED, 0);
+    private final Vector2D RIGHT_WALK = new Vector2D(HORIZ_WALK_SPEED, 0);
 
     public Bird(double x, double y, String name, Color color, Pane parent, int startScore) {
         this.name = name;
@@ -76,7 +82,9 @@ public class Bird implements Actor {
     public void step(double delta) {
         Vector2D offset = new Vector2D(delta, vel);
         Vector2D newPos = new Vector2D(x.get(), y.get()).add(offset);
-        vel = vel.add(new Vector2D(delta, gravity));
+        if (motionState == MotionState.FLYING) {
+            vel = vel.add(new Vector2D(delta, gravity));
+        }
 
         // clamp velocity
         vel = vel.getY() > maxYVel ? new Vector2D(vel.getX(), maxYVel) : vel;
@@ -85,6 +93,21 @@ public class Bird implements Actor {
 
         x.setValue(newPos.getX());
         y.setValue(newPos.getY());
+    }
+
+    public boolean isWalking() {
+        return motionState == MotionState.WALKING;
+    }
+
+    public void enterWalking(double floorLockY) {
+        motionState = MotionState.WALKING;
+        // TODO: need to clamp or decay xvelocity
+        vel = new Vector2D(vel.getX(), 0);
+        y.setValue(floorLockY);
+    }
+
+    public void enterFlying() {
+        motionState = MotionState.FLYING;
     }
 
     @Override
@@ -109,7 +132,7 @@ public class Bird implements Actor {
         }
         if (offset.getY() != 0.0) {
             y.setValue(y.get() + offset.getY());
-            vel = new Vector2D(vel.getX() * 0.4, 0); // stop any Y velocity and dampen X velocity // NOTE: this is NOT frame-rate independent
+            vel = new Vector2D(vel.getX() * 0.95, 0); // stop any Y velocity and dampen X velocity // NOTE: this is NOT frame-rate independent
         }
     }
 
@@ -147,11 +170,20 @@ public class Bird implements Actor {
         } else if (leftPressed) {
             facing = Facing.LEFT;
             poly.setScaleX(-1);
+            if (isWalking()) {
+                setVel(LEFT_WALK);
+            }
         } else if (rightPressed) {
             facing = Facing.RIGHT;
             poly.setScaleX(1);
+            if (isWalking()) {
+                setVel(RIGHT_WALK);
+            }
         } else {
             facing = Facing.NEUTRAL;
+            if (isWalking()) {
+                setVel(Vector2D.ZERO);
+            }
         }
     }
 
@@ -169,6 +201,11 @@ public class Bird implements Actor {
             return false;
         }
         isFlapDown = true;
+        if (isWalking()) {
+            System.out.println("enter flying via flap");
+            enterFlying();
+            y.setValue(y.getValue()-2.0); // give extra bump to make sure Bird isn't still colliding with floor
+        }
         switch (facing) {
             case RIGHT: handleFlap(); handleRight(); break;
             case LEFT: handleFlap(); handleLeft(); break;

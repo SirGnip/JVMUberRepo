@@ -56,6 +56,12 @@ class FluxFlightFight extends ExampleBase implements Stepable {
     private ActorList actorList = new ActorList()
     private FrameStepper stepper
     private BoundingBox edges = new BoundingBox(0, 50, width, height-50)
+    private List<Rectangle> platforms = [
+            new Rectangle(100, 250, 250, 15),
+            new Rectangle(100, 570, 250, 15),
+            new Rectangle(440, 400, 400, 15),
+            new Rectangle(900, 570, 250, 15),
+    ]
     private AudioClip deathAudio
     private List<AudioClip> flapClips = new ArrayList<>()
     private Pane graphRoot
@@ -217,6 +223,15 @@ class FluxFlightFight extends ExampleBase implements Stepable {
         border.setStrokeWidth(3)
         graphRoot.getChildren().add(border)
 
+        // platforms
+        for (plat in platforms) {
+            plat.with {
+                setStroke(Color.PINK)
+                setStrokeWidth(3)
+            }
+        }
+        graphRoot.getChildren().addAll(platforms)
+
         // set up sound
         deathAudio = loadAudio(Cfg.Audio.DEATH)
         flapClips.add(loadAudio(Cfg.Audio.FLAP1))
@@ -227,12 +242,12 @@ class FluxFlightFight extends ExampleBase implements Stepable {
 //        new BirdAnimController(birds.get(0))
 //        BirdHoverRuleController bController1 = new BirdHoverRuleController(birds.get(1), 250, 10, 4)
 //        actorList.actors.add(bController1)
-        def robotBird = new Bird(500, Cfg.GOAL_LEVEL, "Robot", Color.DARKGRAY.darker().darker(), graphRoot, 0)
-        createScoreboard(robotBird)
-        birds.add(robotBird)
+//        def robotBird = new Bird(500, Cfg.GOAL_LEVEL, "Robot", Color.DARKGRAY.darker().darker(), graphRoot, 0)
+//        createScoreboard(robotBird)
+//        birds.add(robotBird)
 //        BirdHoverAndFlyController bController2 = new BirdHoverAndFlyController(robotBird, Cfg.GOAL_LEVEL, 5, 3, 1)
-        def bController2 = new BirdHoverAndFlyRandomlyController(robotBird, 100, 500, 2, 2, 3)
-        actorList.actors.add(bController2)
+//        def bController2 = new BirdHoverAndFlyRandomlyController(robotBird, 100, 500, 2, 2, 3)
+//        actorList.actors.add(bController2)
 
         // FrameStepper
         stepper = new FrameStepper(this).register()
@@ -270,7 +285,7 @@ class FluxFlightFight extends ExampleBase implements Stepable {
 
     void addNextPlayerWithKeyboard(List keyboardMap) {
         def (name, color) = playerList.removeAt(0)
-        def newBird = new Bird(500, Cfg.GOAL_LEVEL, name, color, graphRoot, 0)
+        def newBird = new Bird(300, Cfg.GOAL_LEVEL, name, color, graphRoot, 0)
         birds.add(newBird)
         assignKeyboardInput(newBird, keyboardMap)
         createScoreboard(newBird)
@@ -384,6 +399,33 @@ class FluxFlightFight extends ExampleBase implements Stepable {
                     } else if (bounds2.getMinY() < bounds1.getMinY()) {
                         System.out.println(bird2.getName() + " hit " + bird1.getName())
                         handleBirdCollision(bird2, bird1, intersectPt)
+                    }
+                }
+            }
+        }
+
+        // platform collision/contact detection
+        // When bird is in Walking state, it is continually colliding with the platform. When that intersection stops, the bird has lost contact with the platform and enters Flying state.
+        // When bird is Walking and Flap is pressed...
+        for (bird in birds) {
+            if (bird.isWalking()) {
+                boolean isTouchingAnyPlatform = false
+                for (plt in platforms) {
+                    if (bird.getBounds().intersects(plt.getBoundsInParent())) {
+                        isTouchingAnyPlatform = true
+                        break
+                    }
+                }
+                if (!isTouchingAnyPlatform) {
+                    println "${bird.getName()} lost contact"
+                    bird.enterFlying()
+                }
+            } else {
+                for (plt in platforms) {
+                    if (bird.getBounds().intersects(plt.getBoundsInParent())) {
+                        println "${bird.getName()} contacted platform ${bird.getBounds().getMaxY()} ${plt.getBoundsInParent().getMinY()}"
+//                        bird.enterWalking(plt.getY()-(bird.size/2)-1)
+                        bird.enterWalking(plt.getY()-(bird.size/2)+10)
                     }
                 }
             }

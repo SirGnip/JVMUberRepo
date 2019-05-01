@@ -3,7 +3,7 @@ package com.juxtaflux.app
 /** Global constants */
 class Cfg {
     static final boolean FULLSCREEN = false
-    static final int GOAL_LEVEL = 500
+    static final int GOAL_LEVEL = 200
 
     static class Scoreboard {
         static final int INITIAL_SCORE = 0
