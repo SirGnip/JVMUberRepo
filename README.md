@@ -18,3 +18,5 @@ Libraries
 Can see brief release notes with:
 
     git tag -l --format="%(refname:short) %(taggerdate:short) %(objectname:short) %(contents:lines=1)"
+
+![Hits](https://hitcounter.pythonanywhere.com/count/tag.svg?url=https%3A%2F%2Fgithub.com%2FSirGnip%2FJVMUberRepo)
